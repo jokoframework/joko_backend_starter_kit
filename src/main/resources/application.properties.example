@@ -1,0 +1,11 @@
+#
+# Ejemplo de configuracion para un proyecto tipo
+#
+
+#
+# Tipicamente solo se configura la BD
+#
+spring.datasource.url=jdbc\:postgresql\://localhost\:5432/starter_kit
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.username=postgres
+spring.datasource.password=postgres
