@@ -1,12 +1,12 @@
 package io.github.jokoframework.myproject.basic.repositories.impl;
 
+import io.github.jokoframework.utils.dto_mapping.DTOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.github.jokoframework.myproject.basic.dtos.CountryDTO;
 import io.github.jokoframework.myproject.basic.entities.CountryEntity;
 import io.github.jokoframework.myproject.basic.repositories.IContruyService;
 import io.github.jokoframework.myproject.basic.services.IBasicObjService;
-import io.github.jokoframework.myproject.sys.utils.DTOUtils;
 
 import java.util.List;
 

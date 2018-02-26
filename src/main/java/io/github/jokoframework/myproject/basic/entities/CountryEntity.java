@@ -1,17 +1,17 @@
 package io.github.jokoframework.myproject.basic.entities;
 
 import io.github.jokoframework.myproject.basic.dtos.CountryDTO;
-import io.github.jokoframework.myproject.sys.utils.DTOUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import io.github.jokoframework.utils.dto_mapping.*;
 
 /**
  * Created by danicricco on 2/25/18.
  */
 @Entity
 @Table(name = "countries", schema = "basic")
-public class CountryEntity implements DTOUtils.DTOConvertable {
+public class CountryEntity extends BaseEntity<CountryDTO>{
 
     @Id
     @Basic(optional = false)
@@ -39,8 +39,5 @@ public class CountryEntity implements DTOUtils.DTOConvertable {
         description = pDescription;
     }
 
-    @Override
-    public DTOUtils.BaseDTO toDTO() {
-        return DTOUtils.fromEntityToDTO(this, new CountryDTO());
-    }
+
 }

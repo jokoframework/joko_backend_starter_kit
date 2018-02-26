@@ -1,11 +1,12 @@
 package io.github.jokoframework.myproject.basic.dtos;
 
-import io.github.jokoframework.myproject.sys.utils.DTOUtils;
+import io.github.jokoframework.utils.dto_mapping.BaseDTO;
+import io.github.jokoframework.utils.dto_mapping.DTOUtils;
 
 /**
  * Created by danicricco on 2/25/18.
  */
-public class CountryDTO implements DTOUtils.BaseDTO {
+public class CountryDTO implements BaseDTO {
 
     private String id;
     private String description;
