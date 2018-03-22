@@ -26,8 +26,8 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
  La convencion utilizada es tener un directorio, dentro del cual existan 
  varios PROFILE_DIR segun se requiera. Por ejemplo:
  ```shell
- /opt/starter_kit/dev
- /opt/starter_kit/qa
+ /opt/starter-kit/dev
+ /opt/starter-kit/qa
  ```
  
  En el anterior ejemplo existen dos PROFILE_DIR dentro del joko-demo, el 
@@ -46,17 +46,17 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
   - MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
    el Artifactory interno, sería el recien descargado. Ej. $HOME/.m2/settings.xml
   - PROFILE_DIR: Directorio de perfil creado en el punto inicial. Ej. 
-  /opt/starter_kit/dev
+  /opt/starter-kit
   
   Un ejemplo de este archivo se encuenta en `src/main/resources/development.vars`.
   
   Se recomienda que este archivo esté fuera del workspsace en el directorio 
-  padre de los PROFILE_DIR. Ejemplo: ``/opt/starter_kit/``.
+  padre de los PROFILE_DIR. Ejemplo: ``/opt/starter-kit/``.
   
   ### Step 3) Configuración de variables de entorno
   Exportar variable, desde la terminal:
   ```shell
-    $ export ENV_VARS="/opt/starter_kit/development.vars"
+    $ export ENV_VARS="/opt/starter-kit/development.vars"
   ```
   Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
    un PROFILE_DIR diferente. 
@@ -101,8 +101,8 @@ Una vez hechos estos cambios, solo debemos correr el proyecto como una
 aplicación de Spring Boot, o con la línea de comando (se requiere maven instalado).
 
 ```shell
-  $ mvn spring-boot:run -Dext.prop.dir=/opt/starter_kit/dev -D 
-  spring.config.location=file:///opt/starter_kit/dev/application.properties
+  $ mvn spring-boot:run -Dext.prop.dir=/opt/starter-kit -D 
+  spring.config.location=file:///opt/starter-kit/application.properties
 ```
 
 STS
@@ -114,8 +114,8 @@ como argumento de la VM '-Dspring.config.location=file://'
  añadir una nueva configuración e ir hasta la pestaña (x)Arguments Luego 
  insertar el parámetro en el campo 'VM arguments'. Ejemplo:
 
-    -Dspring.config.location=file:///opt/starter_kit/dev/application.properties -Dext
-    .prop.dir=/opt/finhealth/dev
+    -Dspring.config.location=file:///opt/starter-kit/application.properties -Dext
+    .prop.dir=/opt/starter-kit
 
 
 La mayoría de los IDEs soportan ejecución de aplicaciones tipo Spring Boot o 

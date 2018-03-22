@@ -13,7 +13,6 @@ out.txt
 *.script
 *.out
 /scripts/demo_db.sh
-/src/main/java/py/com/sodep/finhealth/framework/utils/TimeWatch.java
 /scripts/tomcat_deploy.sh
 /src/main/resources/stagemonitor.properties
 run-tests.sh
