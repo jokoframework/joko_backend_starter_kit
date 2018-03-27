@@ -44,8 +44,6 @@ public class AuthenticationManagerImpl implements JokoAuthenticationManager {
             UserAuthDTO user = userManager.checkUser(authentication.getUsername(), authentication.getPassword());
             authentication.setAuthenticated(true);
             authentication.addRole(user.getProfile());
-            System.out.print("USER -> "+ user.getUsername());
-            System.out.print("ADDING PROFILE -> "+ user.getProfile());
             auditPrincipalSession(authentication, user);
             return authentication;
         } catch (UserException e) {
