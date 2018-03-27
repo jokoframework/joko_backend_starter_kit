@@ -4,9 +4,11 @@ backend:
 * Integracion con joko-security 1.0.0
 * Integracion con swagger (/swagger/index.html)
 * RestController
-* Un service (counties)
+* Servicios basicos:
+    * Users
+    * Countries
 * Repository + Entity (JPA)
-* Integracion con liquidbase
+* Integracion con liquibase
 
 La intencion del proyecto es que sirva como un template para crear nuevos 
 proyectos. 

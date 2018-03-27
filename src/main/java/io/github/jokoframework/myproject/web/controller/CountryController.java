@@ -4,15 +4,15 @@ import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+import io.github.jokoframework.myproject.constants.ApiPaths;
 import io.github.jokoframework.security.controller.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import io.github.jokoframework.myproject.basic.dtos.CountryDTO;
-import io.github.jokoframework.myproject.basic.services.IBasicObjService;
-import io.github.jokoframework.myproject.web.APIPaths;
+import io.github.jokoframework.myproject.basic.dto.CountryDTO;
+import io.github.jokoframework.myproject.basic.service.CountryService;
 
 import java.util.List;
 
@@ -22,10 +22,10 @@ import java.util.List;
 @RestController
 public class CountryController {
 
-    private final IBasicObjService basicService;
+    private final CountryService basicService;
 
     @Autowired
-    public CountryController(IBasicObjService basicService){
+    public CountryController(CountryService basicService){
         this.basicService=basicService;
     }
     @ApiOperation(value = "Lista paises",
@@ -34,7 +34,7 @@ public class CountryController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Paises disponibles"),
     })
-    @RequestMapping(value = APIPaths.COUNTRIES, method = RequestMethod.GET,
+    @RequestMapping(value = ApiPaths.COUNTRIES, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String",
             paramType = "header", required = false, value = "Access Token")

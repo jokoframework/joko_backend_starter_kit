@@ -13,16 +13,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * Created by danicricco on 2/21/18.
  */
 @SpringBootApplication
-@ComponentScan(basePackages = {"io.github.jokoframework.security","io.github.jokoframework.myproject"})
-@EnableJpaRepositories(basePackages = {
-        "io.github.jokoframework.security",
-        "io.github.jokoframework.myproject.basic.repositories"
-
-})
-@EntityScan(basePackages = {
-        "io.github.jokoframework.security",
-        "io.github.jokoframework.myproject.basic.entities"
-})
+@ComponentScan(basePackages = {"io.github.jokoframework"})
+@EnableJpaRepositories(basePackages = {"io.github.jokoframework"})
+@EntityScan(basePackages = {"io.github.jokoframework"})
 @EnableScheduling
 public class Application extends SpringBootServletInitializer {
 

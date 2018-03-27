@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet author="bsandoval" id="201803261507">
+		<createTable remarks="persons"
+					 tableName="person" schemaName="basic">
+			<column name="id" type="BIGSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"
+							 primaryKeyName="person_pk" />
+			</column>
+			<column name="name" type="VARCHAR(250)" remarks="First name" />
+			<column name="lastname" type="VARCHAR(255)" remarks="Last name" />
+			<column name="identification_number" type="VARCHAR(100)"
+					remarks="Numero de identif. personal">
+				<constraints nullable="false" unique="true"
+							 uniqueConstraintName="users_identifnumber_uniq" />
+			</column>
+			<column name="birthdate" type="TIMESTAMP(6) WITH TIMEZONE"
+					remarks="Birthdate" />
+			<column name="sex" type="VARCHAR(100)" remarks="Sex" />
+			<column name="marital_status" type="VARCHAR(100)" remarks="Marital status" />
+			<column name="mobile_phone" type="VARCHAR(100)" remarks="Mobile Phone" />
+			<column name="email" type="VARCHAR(255)" remarks="E-mail" />
+			<column name="nationality" type="VARCHAR(100)" remarks="Nacionalidad" />
+		</createTable>
+	</changeSet>
+	<changeSet author="bsandoval" id="201803261216">
+		<createTable remarks="System Users" tableName="user" schemaName="profile">
+			<column name="id" type="BIGSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"
+							 primaryKeyName="person_pk" />
+			</column>
+			<column name="username" type="VARCHAR(255)" remarks="User name">
+				<constraints nullable="false" unique="true" uniqueConstraintName="users_username_uniq"/>
+			</column>
+			<column name="password" remarks="User password" type="VARCHAR(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="profile" type="VARCHAR(50)" remarks="User profile">
+				<constraints nullable="false"/>
+			</column>
+			<column name="created" type="TIMESTAMP(6) WITH TIMEZONE"
+					remarks="Creation time" defaultValueComputed="now()"/>
+			<column name="last_access_date" type="TIMESTAMP(6) WITH TIMEZONE" remarks="Last access date"/>
+			<column name="person_id" type="INT8" remarks="Person id" />
+		</createTable>
+	</changeSet>
+	<changeSet author="bsandoval" id="201803261424">
+		<addForeignKeyConstraint baseColumnNames="person_id"
+								 baseTableName="user" baseTableSchemaName="profile"
+								 constraintName="fk_user_person_id" deferrable="false"
+								 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+								 referencedColumnNames="id" referencedTableName="person"
+								 referencedTableSchemaName="basic" />
+	</changeSet>
+	<changeSet author="bsandoval" id="201803261514">
+		<createTable remarks="person addresses" tableName="address"
+					 schemaName="basic">
+			<column name="id" type="BIGSERIAL" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"
+							 primaryKeyName="address_id_pk" />
+			</column>
+			<column name="address" type="VARCHAR(255)" remarks="Address" />
+			<column name="neighborhood" type="VARCHAR(100)" remarks="Neighborhood" />
+			<column name="city" type="VARCHAR(100)" remarks="City" />
+			<column name="country_code" type="VARCHAR(3)" remarks="Country code" />
+			<column name="type" type="VARCHAR(20)" remarks="Address Type" />
+			<column name="person_id" type="INT8" remarks="Person id" />
+		</createTable>
+	</changeSet>
+	<changeSet author="bsandoval" id="201803261517">
+		<addForeignKeyConstraint baseColumnNames="person_id"
+								 baseTableName="address" baseTableSchemaName="basic"
+								 constraintName="fk_address_person_id" deferrable="false"
+								 initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
+								 referencedColumnNames="id" referencedTableName="person"
+								 referencedTableSchemaName="basic" />
+	</changeSet>
+</databaseChangeLog>
