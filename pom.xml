@@ -28,6 +28,7 @@
 		<joko-utils.version>0.3.0</joko-utils.version>
 		<commons-lang3.version>3.1</commons-lang3.version>
 		<commons-collections4.version>4.1</commons-collections4.version>
+	        <orika-core.version>1.4.6</orika-core.version>
 
 	</properties>
 
@@ -151,6 +152,11 @@
 			<artifactId>gson</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>ma.glasnost.orika</groupId>
+			<artifactId>orika-core</artifactId>
+			<version>${orika-core.version}</version>
+		</dependency>
 
 	</dependencies>
 
