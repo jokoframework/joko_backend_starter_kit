@@ -76,7 +76,7 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
   ```shell
     $ ./scripts/updater fresh
   ```
-  2. (Re)Inicializa datos básicos
+  2. Inicializa datos básicos (o reinicializa)
   ```shell
     $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
     $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
@@ -112,6 +112,9 @@ aplicación de Spring Boot, o con la línea de comando (se requiere maven instal
 ```shell
   $ mvn spring-boot:run -Dext.prop.dir=/opt/starter-kit/dev -Dspring.config.location=file:///opt/starter-kit/dev/application.properties
 ```
+
+
+El usuario/password default que se crea con la base de datos, es admin/123456
 
 STS
 ----
