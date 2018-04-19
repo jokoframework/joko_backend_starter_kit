@@ -44,7 +44,9 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
   ejecucion de liquibase. Este es un archivo bash que debe tener dos variables: 
   
   - MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
-   el Artifactory interno, sería el recien descargado. Ej. $HOME/.m2/settings.xml
+   el Artifactory interno, sería el recien descargado. Ej. $HOME/.m2/settings.xml 
+   puede utilizar de ejemplo el archivo que se encuentra en 
+   `src/main/resources/settings.xml.example` copiando a `$HOME/.m2/settings.xml`
   - PROFILE_DIR: Directorio de perfil creado en el punto inicial. Ej. 
   /opt/starter-kit
   
@@ -61,7 +63,14 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
   Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
    un PROFILE_DIR diferente. 
    
-  ### Step 4) Ejecutar Liquibase.
+  ### Step 4) Instalar librerias Joko
+	Clonar los proyectos 
+		https://github.com/jokoframework/joko-utils
+		https://github.com/jokoframework/security
+	Ejecutar en ambos proyectos el comando `mvn install`
+	Esto deja instaladas las librerías que son dependencias para el Backend.
+
+  ### Step 5) Ejecutar Liquibase.
   
   1. Crea la schema de cero.
   ```shell
@@ -101,8 +110,7 @@ Una vez hechos estos cambios, solo debemos correr el proyecto como una
 aplicación de Spring Boot, o con la línea de comando (se requiere maven instalado).
 
 ```shell
-  $ mvn spring-boot:run -Dext.prop.dir=/opt/starter-kit -D 
-  spring.config.location=file:///opt/starter-kit/application.properties
+  $ mvn spring-boot:run -Dext.prop.dir=/opt/starter-kit/dev -Dspring.config.location=file:///opt/starter-kit/dev/application.properties
 ```
 
 STS
