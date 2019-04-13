@@ -1,4 +1,6 @@
 #!/bin/bash
+DATE_TIME="`date +%F_%H_%M`"
+export DATE_TIME
 
 function check_status() {
     status=$1
