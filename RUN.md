@@ -64,10 +64,13 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
    un PROFILE_DIR diferente. 
    
   ### Step 4) Instalar librerias Joko
-	Clonar los proyectos 
-		https://github.com/jokoframework/joko-utils
-		https://github.com/jokoframework/security
-	Ejecutar en ambos proyectos el comando `mvn install`
+	Clonar los proyectos (no dentro de la misma carpeta backend o PROFILE)
+	https://github.com/jokoframework/joko-utils
+	https://github.com/jokoframework/security
+	Entrar en el directorio de jada proyecto y hacer lo siguiente:
+	-Para Joko-utils solo ejecutar 'mvn install', en caso de tener problemas descargando las dependencias
+	ejecute 'mvn install -Ddownloader.quick.query.timestamp=false'
+	-Para security hay que entrar al proyecto en github y seguir sus instrucciones de instalacion.
 	Esto deja instaladas las librerías que son dependencias para el Backend.
 
   ### Step 5) Ejecutar Liquibase.

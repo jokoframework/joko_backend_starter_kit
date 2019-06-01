@@ -21,6 +21,9 @@
 	<changeSet author="danicricco" id="1518643732286-4">
 		<createSequence sequenceName="joko_security.security_profile_id_seq"/>
 	</changeSet>
+        <changeSet author="danicricco" id="1518643732286-100">
+             <createSequence sequenceName="joko_security.seed_id_seq"/>
+        </changeSet>
 
 
 
@@ -132,6 +135,23 @@
 								 referencedTableName="security_profile"
 								 referencedTableSchemaName="joko_security" />
 	</changeSet>
+
+
+        <changeSet author="danicricco" id="1518643732286-101">
+          <createTable tableName="seed"
+                     schemaName="joko_security"
+                     remarks="Guarda las semillas OTP">
+            <column name="id" type="BIGSERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="seed_secret" type="VARCHAR(255)"/>
+        </createTable>
+      </changeSet>
+      <changeSet author="danicricco" id="1518643732286-102">
+          <addPrimaryKey columnNames="id" constraintName="seed_pkey"
+                         tableName="seed" schemaName="joko_security"/>
+      </changeSet>
 
 
 	<changeSet author="danicricco" id="1518643732286-5">
