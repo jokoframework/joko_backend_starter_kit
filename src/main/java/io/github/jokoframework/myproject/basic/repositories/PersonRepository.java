@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PersonRepository extends JpaRepository<PersonEntity, Long>, JpaSpecificationExecutor<PersonEntity> {
-    PersonEntity findById(Long personId);
+    PersonEntity getOne(Long personId);
     
     PersonEntity findByIdentificationNumber(String identificationNumber);
 }
