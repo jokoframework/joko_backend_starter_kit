@@ -1,7 +1,7 @@
 ## Requisitos para ejecutar el servicio
 
 * IDE compatible con proyectos MAVEN
-* Java 8 (JDK8)
+* Java 11 (JDK11)
 * Base de datos PostgreSQL con el nombre XXXXX
 
 ## Clonar proyecto
