@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <joko-security.version>1.1.1</joko-security.version>
+        <joko-security.version>1.1.2</joko-security.version>
         <joko-utils.version>0.6.1</joko-utils.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-collections4.version>4.1</commons-collections4.version>
