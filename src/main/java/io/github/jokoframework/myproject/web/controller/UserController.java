@@ -1,7 +1,7 @@
 package io.github.jokoframework.myproject.web.controller;
 
 
-import com.wordnik.swagger.annotations.*;
+import io.swagger.annotations.*;
 import io.github.jokoframework.security.controller.SecurityConstants;
 import io.github.jokoframework.myproject.constants.ApiPaths;
 import io.github.jokoframework.myproject.exceptions.UserException;
