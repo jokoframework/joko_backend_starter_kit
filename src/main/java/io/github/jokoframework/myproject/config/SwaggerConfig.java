@@ -1,37 +1,50 @@
 package io.github.jokoframework.myproject.config;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import com.google.common.base.Predicate;
 import io.github.jokoframework.myproject.constants.ApiPaths;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.Collections;
+
+import static com.google.common.base.Predicates.or;
+import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
-@EnableSwagger
-@Profile(value = { "default" })
+@EnableSwagger2
+@Profile(value = {"default"})
 public class SwaggerConfig {
 
-    private SpringSwaggerConfig springSwaggerConfig;
-
-    @Autowired
-    public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
-        this.springSwaggerConfig = springSwaggerConfig;
-    }
 
     @Bean
-    public SwaggerSpringMvcPlugin customImplementation() {
-        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(apiInfo())
-                .includePatterns(ApiPaths.API_PATTERN);
-
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
+                .apiInfo(apiInfo()).select().paths(postPaths()).build();
     }
 
+    private Predicate<String> postPaths() {
+        return or(regex("/api/posts.*"), regex(ApiPaths.API_PATTERN));
+    }
+
+
     private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo("Joko-Starter-Kit API", "", "", "joko@sodep.com.py",
-                "Joko-Starter-Kit API Licence Type", "Apache 2.0");
+        Contact contact = new Contact("Sodep S.A.", "http://www.sodep.com.py", "joko@sodep.com.py");
+        ApiInfo apiInfo = new ApiInfo("Joko-Starter-Kit API",
+                "Joko-Starter-Kit API Licence Type",
+                "1.1",
+                "http://github.com/jokoframework",
+                contact,
+                "@sodepsa",
+                "Apache 2.0",
+                Collections.emptyList());
         return apiInfo;
     }
 }

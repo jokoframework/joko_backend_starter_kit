@@ -24,19 +24,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <joko-security.version>1.1.2</joko-security.version>
+        <joko-security.version>1.1.3</joko-security.version>
         <joko-utils.version>0.6.1</joko-utils.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <orika-core.version>1.4.6</orika-core.version>
 
-        <dependency-check.version>5.2.0</dependency-check.version>
+        <dependency-check.version>5.2.1</dependency-check.version>
         <postgresql.version>42.2.5</postgresql.version>
         <aws-java-sdk-bom.version>1.11.233</aws-java-sdk-bom.version>
-        <jjwt.version>0.6.0</jjwt.version>
-        <swagger-springmvc.version>1.0.2</swagger-springmvc.version>
+        <jjwt.version>0.9.1</jjwt.version>
         <httpclient.version>4.5.1</httpclient.version>
         <commons-text.version>1.1</commons-text.version>
+        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+
+        <dom4j.version>2.1.1</dom4j.version>
     </properties>
 
     <dependencyManagement>
@@ -115,6 +117,12 @@
             <groupId>io.github.jokoframework</groupId>
             <artifactId>joko-security</artifactId>
             <version>${joko-security.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.github.jokoframework</groupId>
@@ -126,12 +134,27 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>${jjwt.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox-swagger2.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.mangofactory</groupId>
-            <artifactId>swagger-springmvc</artifactId>
-            <version>${swagger-springmvc.version}</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox-swagger2.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -176,7 +199,14 @@
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>2.1.1</version>
+            <version>${dom4j.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.9.3</version>
         </dependency>
 
     </dependencies>
