@@ -2,7 +2,7 @@
 Este es un modulo que contiene lo que normalmente utilizamos en un proyecto 
 backend:
 * Integracion con joko-security 1.0.0
-* Integracion con swagger (/swagger/index.html)
+* Integracion con swagger 2 (/swagger-ui.html)
 * RestController
 * Servicios basicos:
     * Users

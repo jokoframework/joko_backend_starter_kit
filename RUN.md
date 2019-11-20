@@ -137,5 +137,5 @@ permiten configurar ejecuciones customizadas de maven.
 ### Swagger API
 El proyecto cuenta con documentación del API accesible desde el swagger-ui. URI al swagger:
 
-http://localhost:8080/swagger/index.html
+http://localhost:8080/swagger-ui.html
 
