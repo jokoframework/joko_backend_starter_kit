@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity getByIdAndFailIfNotExist(Long userId, Boolean failIfNotExist) throws UserException {
-		UserEntity user = repository.findOne(userId);
+        UserEntity user = repository.getOne(userId);
 		if(user==null && failIfNotExist){
 			throw UserException.notFound(userId);
 		}

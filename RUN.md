@@ -1,7 +1,7 @@
 ## Requisitos para ejecutar el servicio
 
 * IDE compatible con proyectos MAVEN
-* Java 8 (JDK8)
+* Java 11 (JDK11)
 * Base de datos PostgreSQL con el nombre XXXXX
 
 ## Clonar proyecto
@@ -44,11 +44,11 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
   ejecucion de liquibase. Este es un archivo bash que debe tener dos variables: 
   
   - MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
-   el Artifactory interno, sería el recien descargado. Ej. $HOME/.m2/settings.xml 
+   el Artifactory interno, sería el recien descargado. Ej. ` $HOME/.m2/settings.xml` 
    puede utilizar de ejemplo el archivo que se encuentra en 
    `src/main/resources/settings.xml.example` copiando a `$HOME/.m2/settings.xml`
-  - PROFILE_DIR: Directorio de perfil creado en el punto inicial. Ej. 
-  /opt/starter-kit
+  - `PROFILE_DIR`: Directorio de perfil creado en el punto inicial. Ej. 
+  `/opt/starter-kit`
   
   Un ejemplo de este archivo se encuenta en `src/main/resources/development.vars`.
   
@@ -60,50 +60,51 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
   ```shell
     $ export ENV_VARS="/opt/starter-kit/development.vars"
   ```
-  Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
-   un PROFILE_DIR diferente. 
+  Obs.: El truco es tener varios archivos `profile.vars` y cada uno apuntando a
+   un `PROFILE_DIR` diferente. 
    
   ### Step 4) Instalar librerias Joko
-	Clonar los proyectos 
-		https://github.com/jokoframework/joko-utils
-		https://github.com/jokoframework/security
-	Ejecutar en ambos proyectos el comando `mvn install`
-	Esto deja instaladas las librerías que son dependencias para el Backend.
+	
+Clonar los proyectos (no dentro de la misma carpeta backend o PROFILE)
+	
+https://github.com/jokoframework/joko-utils
+
+https://github.com/jokoframework/security
+
+Entrar en el directorio de jada proyecto y hacer lo siguiente:
+
+-Para Joko-utils solo ejecutar 'mvn install', en caso de tener problemas descargando las dependencias ejecute
+ 
+ `mvn install -Ddownloader.quick.query.timestamp=false`
+
+-Para security hay que entrar al proyecto en github y seguir sus instrucciones de instalacion. Esto deja instaladas las librerías que son dependencias para el Backend.
 
   ### Step 5) Ejecutar Liquibase.
   
-  1. Crea la schema de cero.
+1.- Crea la schema de cero.
   ```shell
     $ ./scripts/updater fresh
   ```
-  2. Inicializa datos básicos (o reinicializa)
+2.- Inicializa datos básicos (o reinicializa)
   ```shell
     $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
     $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
   ```
   **OJO**:
-    * El parámetro "fresh" elimina la base de datos que está configurada en el application.properties
-      y la vuelve a crear desde cero con la última versión del schema
+* El parámetro `fresh` elimina la base de datos que está configurada en el `application.properties` y la vuelve a crear desde cero con la última versión del schema
   
-    * El parámetro "seed <file>" carga datos indicados en el archivo <file>, para los casos en que se
-      ejecute "fresh" siempre debe ir seguido de un "seed" con el archivo que (re)inicializa los datos
-      básicos del sistema 
+* Los parámetros `seed <file>` cargan datos indicados en el archivo `<file>`, para los casos en que se ejecute `fresh` siempre debe ir seguido de un `seed` con el archivo que (re)inicializa los datos básicos del sistema 
   
-    * Los datos básicos del sistema estan en dos archivos:
-      ** seed-data.sql: Todos la configuracion base que es independiente al 
-      ambiente
-      ** [ambiente]-config. Por ejemplo: dev-config.sql . Posee los parametros 
-      de configuracion adecuados  para el ambiente de
-    desarrollo. Tambien existe qa-config y prod-config
+* Los datos básicos del sistema estan en dos archivos:
+
+`seed-data.sql`: Todos la configuracion base que es independiente al ambiente
+`[ambiente]-config`. Por ejemplo: `dev-config.sql` . Posee los parametros de configuracion adecuados  para el ambiente de desarrollo. Tambien existe `qa-config` y `prod-config`
   
-  3. Para correr el liquibase en modo de actualización ejecute:
-  ```shell
+3.- Para correr el liquibase en modo de actualización ejecute:  
+```
     $ ./scripts/updater update
   ```
-  
-  
-  
-
+    
 ## Corren con Maven
 
 Una vez hechos estos cambios, solo debemos correr el proyecto como una 
@@ -119,11 +120,12 @@ El usuario/password default que se crea con la base de datos, es admin/123456
 STS
 ----
 Para poder levantar la apliación desde un IDE, se debe añadir el parámetro 
-como argumento de la VM '-Dspring.config.location=file://'
- con la ruta al archivo  application.properties. Por ejemplo en el IDE 
- Eclipse-STS  ir hasta debug/debug-configuracion,
- añadir una nueva configuración e ir hasta la pestaña (x)Arguments Luego 
- insertar el parámetro en el campo 'VM arguments'. Ejemplo:
+como argumento de la VM `-Dspring.config.location=file://` 
+ con la ruta al archivo  application.properties. 
+ 
+ Por ejemplo en el IDE  Eclipse-STS  ir hasta debug/debug-configuracion,  añadir una nueva configuración e ir hasta la pestaña (x)Arguments Luego insertar el parámetro en el campo 'VM arguments'. 
+ 
+ Ejemplo:
 
     -Dspring.config.location=file:///opt/starter-kit/application.properties -Dext
     .prop.dir=/opt/starter-kit
@@ -135,4 +137,5 @@ permiten configurar ejecuciones customizadas de maven.
 ### Swagger API
 El proyecto cuenta con documentación del API accesible desde el swagger-ui. URI al swagger:
 
-    http://localhost:8080/swagger/index.html
+http://localhost:8080/swagger-ui.html
+
