@@ -5,7 +5,7 @@
 
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-backend-starter-kit</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <parent>
@@ -25,7 +25,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <joko-security.version>1.1.6</joko-security.version>
-        <joko-utils.version>0.6.1</joko-utils.version>
+        <joko-utils.version>0.6.2</joko-utils.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <orika-core.version>1.4.6</orika-core.version>
