@@ -107,11 +107,16 @@ Entrar en el directorio de jada proyecto y hacer lo siguiente:
     
 ## Corren con Maven
 
-Una vez hechos estos cambios, solo debemos correr el proyecto como una 
-aplicación de Spring Boot, o con la línea de comando (se requiere maven instalado).
+Una vez hechos estos cambios, debemos definir y exportar la siguiente variable de entorno:
 
 ```shell
-  $ mvn spring-boot:run -Dext.prop.dir=/opt/starter-kit/dev -Dspring.config.location=file:///opt/starter-kit/dev/application.properties
+  $ export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
+```
+
+Posteriormente, podemos correr el proyecto como una aplicación de Spring Boot, o con la siguiente línea de comando (se requiere maven instalado).
+
+```shell
+  $ mvn -Dext.prop.dir=/opt/starter-kit/dev spring-boot:run
 ```
 
 
