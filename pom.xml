@@ -5,7 +5,7 @@
 
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-backend-starter-kit</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <parent>
