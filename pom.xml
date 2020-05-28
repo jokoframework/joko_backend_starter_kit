@@ -37,7 +37,8 @@
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
 
         <dom4j.version>2.1.1</dom4j.version>
-        <jackson-databind.version>2.10.1</jackson-databind.version>
+        <jackson-databind.version>2.9.10.4</jackson-databind.version>
+    </properties>
 
         <h2.version>1.4.200</h2.version>
     </properties>
