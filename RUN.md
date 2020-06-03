@@ -3,6 +3,10 @@
 * IDE compatible con proyectos MAVEN
 * Java 11 (JDK11)
 * Base de datos PostgreSQL con el nombre XXXXX
+* Liquibase (Version mas nueva, oficial de la pagina)
+
+OBS. Una vez instalado el PostgreSQL, asegurarse de darle todos los permisos al usuario "Postgres" que
+se crea por defecto (Para evitar cualquier potencial error mas adelante).
 
 ## Clonar proyecto
 
@@ -122,6 +126,9 @@ Posteriormente, podemos correr el proyecto como una aplicación de Spring Boot, 
 
 El usuario/password default que se crea con la base de datos, es admin/123456
 
+OBS. Se recomienda este metodo, ya que con STS habria que hacer ciertas configuraciones extras para ejecutar desde ahi.
+Queda a eleccion del lector.
+
 STS
 ----
 Para poder levantar la apliación desde un IDE, se debe añadir el parámetro 
@@ -140,7 +147,11 @@ La mayoría de los IDEs soportan ejecución de aplicaciones tipo Spring Boot o
 permiten configurar ejecuciones customizadas de maven.
 
 ### Swagger API
-El proyecto cuenta con documentación del API accesible desde el swagger-ui. URI al swagger:
+El proyecto cuenta con documentación del API accesible desde el swagger-ui.
+URI al swagger desde maquina HOST:
 
-http://localhost:8080/swagger-ui.html
+  http://localhost:8080/swagger-ui.html
+	
+OBS. Si se desea abrir la pagina desde algun Windows u otro SO interno:
 
+  http://"IP DE LA MAQUINA HOST":8080/swagger-ui.html
