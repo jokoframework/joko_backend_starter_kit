@@ -3,6 +3,10 @@
 * IDE compatible con proyectos MAVEN
 * Java 11 (JDK11)
 * Base de datos PostgreSQL con el nombre XXXXX
+* Liquibase (Version mas nueva, oficial de la pagina)
+
+OBS. Una vez instalado el PostgreSQL, asegurarse de darle todos los permisos al usuario "Postgres" que
+se crea por defecto (Para evitar cualquier potencial error mas adelante).
 
 ## Clonar proyecto
 
@@ -99,6 +103,8 @@ Entrar en el directorio de jada proyecto y hacer lo siguiente:
 
 `seed-data.sql`: Todos la configuracion base que es independiente al ambiente
 `[ambiente]-config`. Por ejemplo: `dev-config.sql` . Posee los parametros de configuracion adecuados  para el ambiente de desarrollo. Tambien existe `qa-config` y `prod-config`
+
+* Para evitar posible mensaje de error durante la instalacion de la libreria, asegurese de tener instalada la herramienta "ifconfig".
   
 3.- Para correr el liquibase en modo de actualización ejecute:  
 ```
@@ -122,6 +128,20 @@ Posteriormente, podemos correr el proyecto como una aplicación de Spring Boot, 
 
 El usuario/password default que se crea con la base de datos, es admin/123456
 
+OBS. Se recomienda este metodo, ya que con STS habria que hacer ciertas configuraciones extras para ejecutar desde ahi.
+Queda a eleccion del lector.
+
+A partir de este punto, cada vez que se decida levantar y bajar el servidor del Backend, se deben ejecutar los siguientes comandos en la terminal desde la carpeta del proyecto joko backend starter-kit:
+
+```shell
+  $ export ENV_VARS="/opt/starter-kit/development.vars"
+  $ ./scripts/updater fresh
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
+  $ export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
+  $ mvn -Dext.prop.dir=/opt/starter-kit/dev spring-boot:run
+```
+
 STS
 ----
 Para poder levantar la apliación desde un IDE, se debe añadir el parámetro 
@@ -140,7 +160,11 @@ La mayoría de los IDEs soportan ejecución de aplicaciones tipo Spring Boot o
 permiten configurar ejecuciones customizadas de maven.
 
 ### Swagger API
-El proyecto cuenta con documentación del API accesible desde el swagger-ui. URI al swagger:
+El proyecto cuenta con documentación del API accesible desde el swagger-ui.
+URI al swagger desde maquina HOST:
 
-http://localhost:8080/swagger-ui.html
+  http://localhost:8080/swagger-ui.html
+	
+OBS. Si se desea abrir la pagina desde algun Windows u otro SO interno:
 
+  http://"IP DE LA MAQUINA HOST":8080/swagger-ui.html
