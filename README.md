@@ -12,7 +12,8 @@ backend:
 
 La intencion del proyecto es que sirva como un template para crear nuevos 
 proyectos.
-OBS. Se recomienda utilizar sistemas Linux para la implementacion del Backend.
+
+OBS. Las instrucciones estan orientadas a sistemas UNIX, no obstante, pueden ser adaptadas para otros sistemas.
 
 # Como utilizar el proyecto
 ## Clonar el proyecto de
