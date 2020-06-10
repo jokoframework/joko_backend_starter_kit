@@ -11,10 +11,13 @@ backend:
 * Integracion con liquibase
 
 La intencion del proyecto es que sirva como un template para crear nuevos 
-proyectos. 
+proyectos.
+
+OBS. Las instrucciones estan orientadas a sistemas UNIX, no obstante, pueden ser adaptadas para otros sistemas.
 
 # Como utilizar el proyecto
 ## Clonar el proyecto de
+https://github.com/jokoframework/joko_backend_starter_kit
 
 ## Eliminar la dependencia al repo actual
 rm -rf .git

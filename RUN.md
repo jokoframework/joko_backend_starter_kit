@@ -4,6 +4,7 @@
 * Java 11 (JDK11)
 * Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PosgreSQL.md)
 
+
 ## Clonar proyecto
 
 Debe clonar el proyecto de (Es un repositorio autenticado, consultar el URL para `clone` en):
@@ -72,6 +73,20 @@ Posteriormente, podemos correr el proyecto como una aplicación de Spring Boot, 
 
 El usuario/password default que se crea con la base de datos, es admin/123456
 
+OBS. Se recomienda este metodo, ya que con STS habria que hacer ciertas configuraciones extras para ejecutar desde ahi.
+Queda a eleccion del lector.
+
+A partir de este punto, cada vez que se decida levantar y bajar el servidor del Backend, se deben ejecutar los siguientes comandos en la terminal desde la carpeta del proyecto joko backend starter-kit:
+
+```shell
+  $ export ENV_VARS="/opt/starter-kit/development.vars"
+  $ ./scripts/updater fresh
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
+  $ export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
+  $ mvn -Dext.prop.dir=/opt/starter-kit/dev spring-boot:run
+```
+
 STS
 ----
 Para poder levantar la apliación desde un IDE, se debe añadir el parámetro 
@@ -90,7 +105,11 @@ La mayoría de los IDEs soportan ejecución de aplicaciones tipo Spring Boot o
 permiten configurar ejecuciones customizadas de maven.
 
 ### Swagger API
-El proyecto cuenta con documentación del API accesible desde el swagger-ui. URI al swagger:
+El proyecto cuenta con documentación del API accesible desde el swagger-ui.
+URI al swagger desde maquina HOST:
 
-http://localhost:8080/swagger-ui.html
+  http://localhost:8080/swagger-ui.html
+	
+OBS. Si se desea abrir la pagina desde algun Windows u otro SO interno:
 
+  http://"IP DE LA MAQUINA HOST":8080/swagger-ui.html
