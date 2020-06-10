@@ -2,11 +2,8 @@
 
 * IDE compatible con proyectos MAVEN
 * Java 11 (JDK11)
-* Base de datos PostgreSQL con el nombre XXXXX
-* Liquibase (Version mas nueva, oficial de la pagina)
+* Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PosgreSQL.md)
 
-OBS. Una vez instalado el PostgreSQL, asegurarse de darle todos los permisos al usuario "Postgres" que
-se crea por defecto (Para evitar cualquier potencial error mas adelante).
 
 ## Clonar proyecto
 
@@ -26,7 +23,8 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
  ### Step 1) Crear el directorio PROFILE_DIR
  El directorio de profile contiene el archivo application.properties con la 
  configuracion necesaria para lanzar la aplicacion spring-boot.
- 
+Esto permite tener diferenciados los ambientes de ejecución.
+
  La convencion utilizada es tener un directorio, dentro del cual existan 
  varios PROFILE_DIR segun se requiera. Por ejemplo:
  ```shell
@@ -42,32 +40,7 @@ El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
  Obs.: Un archivo de ejemplo para el application.properties se encuentra en 
  `src/main/resources/application.properties.examples`
   
-  ### Step 2) Configuración del archivo "development.vars"
-  
-  Se debe configurar el archivo "development.vars", que servirá para la 
-  ejecucion de liquibase. Este es un archivo bash que debe tener dos variables: 
-  
-  - MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
-   el Artifactory interno, sería el recien descargado. Ej. ` $HOME/.m2/settings.xml` 
-   puede utilizar de ejemplo el archivo que se encuentra en 
-   `src/main/resources/settings.xml.example` copiando a `$HOME/.m2/settings.xml`
-  - `PROFILE_DIR`: Directorio de perfil creado en el punto inicial. Ej. 
-  `/opt/starter-kit`
-  
-  Un ejemplo de este archivo se encuenta en `src/main/resources/development.vars`.
-  
-  Se recomienda que este archivo esté fuera del workspsace en el directorio 
-  padre de los PROFILE_DIR. Ejemplo: ``/opt/starter-kit/``.
-  
-  ### Step 3) Configuración de variables de entorno
-  Exportar variable, desde la terminal:
-  ```shell
-    $ export ENV_VARS="/opt/starter-kit/development.vars"
-  ```
-  Obs.: El truco es tener varios archivos `profile.vars` y cada uno apuntando a
-   un `PROFILE_DIR` diferente. 
-   
-  ### Step 4) Instalar librerias Joko
+  ### Step 2) Instalar librerias Joko
 	
 Clonar los proyectos (no dentro de la misma carpeta backend o PROFILE)
 	
@@ -77,41 +50,13 @@ https://github.com/jokoframework/security
 
 Entrar en el directorio de jada proyecto y hacer lo siguiente:
 
--Para Joko-utils solo ejecutar 'mvn install', en caso de tener problemas descargando las dependencias ejecute
+-Para Joko-utils solo ejecutar `mvn install`, en caso de tener problemas descargando las dependencias ejecute
  
  `mvn install -Ddownloader.quick.query.timestamp=false`
 
--Para security hay que entrar al proyecto en github y seguir sus instrucciones de instalacion. Esto deja instaladas las librerías que son dependencias para el Backend.
+-Para [security](https://github.com/jokoframework/security) hay que entrar al proyecto en github y seguir sus instrucciones de instalacion. Esto deja instaladas las librerías que son dependencias para el Backend.
 
-  ### Step 5) Ejecutar Liquibase.
-  
-1.- Crea la schema de cero.
-  ```shell
-    $ ./scripts/updater fresh
-  ```
-2.- Inicializa datos básicos (o reinicializa)
-  ```shell
-    $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
-    $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
-  ```
-  **OJO**:
-* El parámetro `fresh` elimina la base de datos que está configurada en el `application.properties` y la vuelve a crear desde cero con la última versión del schema
-  
-* Los parámetros `seed <file>` cargan datos indicados en el archivo `<file>`, para los casos en que se ejecute `fresh` siempre debe ir seguido de un `seed` con el archivo que (re)inicializa los datos básicos del sistema 
-  
-* Los datos básicos del sistema estan en dos archivos:
-
-`seed-data.sql`: Todos la configuracion base que es independiente al ambiente
-`[ambiente]-config`. Por ejemplo: `dev-config.sql` . Posee los parametros de configuracion adecuados  para el ambiente de desarrollo. Tambien existe `qa-config` y `prod-config`
-
-* Para evitar posible mensaje de error durante la instalacion de la libreria, asegurese de tener instalada la herramienta "ifconfig".
-  
-3.- Para correr el liquibase en modo de actualización ejecute:  
-```
-    $ ./scripts/updater update
-  ```
-    
-## Corren con Maven
+### Step 3 Corren con Maven
 
 Una vez hechos estos cambios, debemos definir y exportar la siguiente variable de entorno:
 
