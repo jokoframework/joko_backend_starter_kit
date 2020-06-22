@@ -35,7 +35,3 @@ git remote add origin <nuevoURL>
 git push origin master
 
 
-# Changelog
-Para una descripcion detallada de las versiones ver el archivo de [Changelog](CHANGELOG.md)
-
-
