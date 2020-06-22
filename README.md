@@ -20,8 +20,10 @@ OBS. Las instrucciones estan orientadas a sistemas UNIX, no obstante, pueden ser
 https://github.com/jokoframework/joko_backend_starter_kit
 
 ## Eliminar la dependencia al repo actual
+```
 rm -rf .git
 git init
+``` 
 
 ## Ejecutarlo
 Para una guia de como correr el proyecto visite [RUN.md](RUN.md)
@@ -31,7 +33,9 @@ Para una guia de como correr el proyecto visite [RUN.md](RUN.md)
 * Eliminar todo lo que quiera
 
 ## PUSH al nuevo repo
+```
 git remote add origin <nuevoURL>
 git push origin master
+```
 
 
