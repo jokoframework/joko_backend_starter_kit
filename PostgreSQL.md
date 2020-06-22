@@ -57,3 +57,17 @@ Describimos a continuación las instrucciones para ejecutarlas desde unos script
   ```
 
 Más detalles en la documentación del Liquibase.
+
+OBS. Se recomienda este metodo, ya que con STS habria que hacer ciertas configuraciones extras para ejecutar desde ahi.
+Queda a eleccion del lector. En caso de que se quiera volver a tener el servidor con las configuraciones default en el PostgreSQL, se deja unas instrucciones a continuación.
+
+A partir de este punto, cada vez que se decida levantar y bajar el servidor del Backend, se deben ejecutar los siguientes comandos en la terminal desde la carpeta del proyecto joko backend starter-kit:
+
+```shell
+  $ export ENV_VARS="/opt/starter-kit/development.vars"
+  $ ./scripts/updater fresh
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
+  $ export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
+  $ mvn -Dext.prop.dir=/opt/starter-kit/dev spring-boot:run
+```
