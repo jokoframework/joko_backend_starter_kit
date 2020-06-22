@@ -48,7 +48,7 @@ https://github.com/jokoframework/joko-utils
 
 https://github.com/jokoframework/security
 
-Entrar en el directorio de jada proyecto y hacer lo siguiente:
+Entrar en el directorio de cada proyecto y hacer lo siguiente:
 
 -Para Joko-utils solo ejecutar `mvn install`, en caso de tener problemas descargando las dependencias ejecute
  
