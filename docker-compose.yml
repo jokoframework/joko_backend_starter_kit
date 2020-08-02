@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  starter-kit:
+    container_name: joko-starter-kit
+    image: 'joko-starter-kit'
+    build:
+        context: ./
+        dockerfile: Dockerfile
+    ports:
+      - '8080:8080'

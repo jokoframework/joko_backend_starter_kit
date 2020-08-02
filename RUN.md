@@ -14,19 +14,35 @@ $ git clone XXXXXX
 $ cd XXXX
 ```
 
-## Configuración
+## Ejecución Rapida
+Si ya se tienen instaladas las librerías Joko necesarias (joko-utils y [security](https://github.com/jokoframework/security): pasos
+de instalacion mas abajo) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
+
+### Opción 1: Ejecución Con Docker
+La forma mas simple de levantar el proyecto es con la utilización de Docker, ejecutando
+el siguiente comando dentro del proyecto:
+`docker-compose up`
+
+### Opción 2: Ejecución Sin Docker
+Se debe ejecutar lo siguiente dentro del proyecto:
+```
+cd target/
+java -jar nombreDelArchivoJar.jar
+```
+
+## Otras Configuraciones
 El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
- de vida de la base de datos. Con esto se puede crear facilmente toda la BD 
+ de vida de la base de datos. Con esto se puede crear fácilmente toda la BD 
  desde la linea de comandos. Para actualizar hay que seguir los siguientes 
  pasos:
   
  ### Step 1) Crear el directorio PROFILE_DIR
  El directorio de profile contiene el archivo application.properties con la 
- configuracion necesaria para lanzar la aplicacion spring-boot.
+ configuración necesaria para lanzar la aplicación spring-boot.
 Esto permite tener diferenciados los ambientes de ejecución.
 
  La convencion utilizada es tener un directorio, dentro del cual existan 
- varios PROFILE_DIR segun se requiera. Por ejemplo:
+ varios PROFILE_DIR según se requiera. Por ejemplo:
  ```shell
  /opt/starter-kit/dev
  /opt/starter-kit/qa
@@ -77,7 +93,7 @@ El proyecto usa por default la base de datos Embedded h2.
 
 STS
 ----
-Para poder levantar la apliación desde un IDE, se debe añadir el parámetro 
+Para poder levantar la aplicación desde un IDE, se debe añadir el parámetro 
 como argumento de la VM `-Dspring.config.location=file://` 
  con la ruta al archivo  application.properties. 
  
