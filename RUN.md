@@ -2,7 +2,7 @@
 
 * IDE compatible con proyectos MAVEN
 * Java 11 (JDK11)
-* Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PosgreSQL.md)
+* Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PostgreSQL.md)
 
 
 ## Clonar proyecto
@@ -14,12 +14,12 @@ $ git clone XXXXXX
 $ cd XXXX
 ```
 
-## Ejecución Rapida
+## Ejecución Rápida
 Si ya se tienen instaladas las librerías Joko necesarias (joko-utils y [security](https://github.com/jokoframework/security): pasos
-de instalacion mas abajo) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
+de instalacion más abajo) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
 
 ### Opción 1: Ejecución Con Docker
-La forma mas simple de levantar el proyecto es con la utilización de Docker, ejecutando
+La forma más simple de levantar el proyecto es con la utilización de Docker, ejecutando
 el siguiente comando dentro del proyecto:
 `docker-compose up`
 
@@ -56,7 +56,7 @@ Esto permite tener diferenciados los ambientes de ejecución.
  Obs.: Un archivo de ejemplo para el application.properties se encuentra en 
  `src/main/resources/application.properties.examples`
   
-  ### Step 2) Instalar librerias Joko
+  ### Step 2) Instalar librerías Joko
 	
 Clonar los proyectos (no dentro de la misma carpeta backend o PROFILE)
 	
@@ -114,6 +114,6 @@ URI al swagger desde maquina HOST:
 
   http://localhost:8080/swagger-ui.html
 	
-OBS. Si se desea abrir la pagina desde algun Windows u otro SO interno:
+OBS. Si se desea abrir la pagina desde algún Windows u otro SO interno:
 
   http://"IP DE LA MAQUINA HOST":8080/swagger-ui.html
