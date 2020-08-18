@@ -12,6 +12,7 @@ out.txt
 *.log
 *.script
 *.out
+*.code-workspace
 /scripts/demo_db.sh
 /scripts/tomcat_deploy.sh
 /src/main/resources/stagemonitor.properties
