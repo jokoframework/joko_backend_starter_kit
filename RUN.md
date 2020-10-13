@@ -13,10 +13,9 @@ Debe clonar el proyecto de (Es un repositorio autenticado, consultar el URL para
 $ git clone XXXXXX
 $ cd XXXX
 ```
-
-### Configuración de settings.xml
+## Configuración de settings.xml
 ----
-Una vez terminado el paso anterior, ir a la carpeta `/home`, abrir terminal y ejecutar lo siguiente:
+Una vez terminado el paso anterior (Clonar proyecto), ir a la carpeta `/home`, abrir terminal y ejecutar lo siguiente:
 
 ```shell
 $ cd .m2
@@ -65,6 +64,24 @@ Cuando estemos en la carpeta oculta .m2, se debe crear un archivo vacío llamado
 ```
 
 `USERNAME` corresponde al usuario de GitHub y el `PERSONAL ACCESS TOKEN` corresponde al token de accesso personal de dicho usuario. En caso de no tener un token, se puede crear uno siguiendo la siguiente guía https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
+
+## Ejecución Rápida
+Si ya se tienen instaladas las librerías Joko necesarias (joko-utils y [security](https://github.com/jokoframework/security)) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
+
+### Opción 1: Ejecución Con Docker
+La forma más simple de levantar el proyecto es con la utilización de Docker, ejecutando
+el siguiente comando dentro del proyecto:
+`docker-compose up`
+
+### Opción 2: Ejecución Sin Docker
+Se debe ejecutar lo siguiente dentro del proyecto:
+```
+cd target/
+java -jar nombreDelArchivoJar.jar
+```
+
+## Ejecución Normal
+Si todavía no tenemos ninguna de las librerías instaladas (joko-utils y [security](https://github.com/jokoframework/security)) entonces se procede con una de las siguientes opciones:
 
 ### Opción 1 - Correr con Maven
 ----
