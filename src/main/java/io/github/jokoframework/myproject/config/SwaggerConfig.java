@@ -3,7 +3,6 @@ package io.github.jokoframework.myproject.config;
 import com.google.common.base.Predicate;
 import io.github.jokoframework.myproject.constants.ApiPaths;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
