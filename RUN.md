@@ -1,6 +1,6 @@
 ## Requisitos para ejecutar el servicio
 ----
-* IDE compatible con proyectos MAVEN o tener instalado MAVEN en el SO de Linux que se este utilizando
+* IDE compatible con proyectos MAVEN o tener instalado MAVEN en el SO de Linux que se esté utilizando
 * Java 11 (JDK11)
 * Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PostgreSQL.md)
 
@@ -15,7 +15,7 @@ $ cd XXXX
 ```
 ## Configuración de settings.xml
 ----
-Una vez terminado el paso anterior (Clonar proyecto), ir a la carpeta `/home`, abrir terminal y ejecutar lo siguiente:
+Una vez terminado el paso anterior (Clonar proyecto), ir a la carpeta `/home/username`, abrir terminal y ejecutar lo siguiente:
 
 ```shell
 $ cd .m2
