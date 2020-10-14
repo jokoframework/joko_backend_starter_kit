@@ -2,6 +2,7 @@ package io.github.jokoframework.myproject.config;
 
 import com.google.common.base.Predicate;
 import io.github.jokoframework.myproject.constants.ApiPaths;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -31,11 +32,11 @@ public class SwaggerConfig {
     }
 
     private Predicate<String> postPaths() {
+    	
         return or(regex("/api/posts.*"), regex(ApiPaths.API_PATTERN));
     }
 
-
-    private ApiInfo apiInfo() {
+	private ApiInfo apiInfo() {
         Contact contact = new Contact("Sodep S.A.", "http://www.sodep.com.py", "joko@sodep.com.py");
         ApiInfo apiInfo = new ApiInfo("Joko-Starter-Kit API",
                 "Joko-Starter-Kit API Licence Type",

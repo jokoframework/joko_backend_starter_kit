@@ -1,22 +1,72 @@
 ## Requisitos para ejecutar el servicio
-
-* IDE compatible con proyectos MAVEN
+----
+* IDE compatible con proyectos MAVEN o tener instalado MAVEN en el SO de Linux que se esté utilizando
 * Java 11 (JDK11)
 * Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PostgreSQL.md)
 
 
 ## Clonar proyecto
-
+----
 Debe clonar el proyecto de (Es un repositorio autenticado, consultar el URL para `clone` en):
 
 ```shell
 $ git clone XXXXXX
 $ cd XXXX
 ```
+## Configuración de settings.xml
+----
+Una vez terminado el paso anterior (Clonar proyecto), ir a la carpeta `/home/username`, abrir terminal y ejecutar lo siguiente:
+
+```shell
+$ cd .m2
+```
+
+Cuando estemos en la carpeta oculta .m2, se debe crear un archivo vacío llamado `settings.xml` y pegar lo siguiente dentro del archivo:
+
+```shell
+  <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        
+        <repository>
+          <id>github</id>
+          <name>GitHub jokoframework Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/jokoframework/security</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>github</id>
+      <username>USERNAME</username>
+      <password>PERSONAL ACCESS TOKEN/password>
+    </server>
+  </servers>
+</settings>
+```
+
+`USERNAME` corresponde al usuario de GitHub y el `PERSONAL ACCESS TOKEN` corresponde al token de accesso personal de dicho usuario. En caso de no tener un token, se puede crear uno siguiendo la siguiente guía https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
 
 ## Ejecución Rápida
-Si ya se tienen instaladas las librerías Joko necesarias (joko-utils y [security](https://github.com/jokoframework/security): pasos
-de instalacion más abajo) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
+Si ya se tienen instaladas las librerías Joko necesarias (joko-utils y [security](https://github.com/jokoframework/security)) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
 
 ### Opción 1: Ejecución Con Docker
 La forma más simple de levantar el proyecto es con la utilización de Docker, ejecutando
@@ -30,85 +80,32 @@ cd target/
 java -jar nombreDelArchivoJar.jar
 ```
 
-## Otras Configuraciones
-El proyecto posee un conjunto de scripts que nos permiten automatizar el ciclo
- de vida de la base de datos. Con esto se puede crear fácilmente toda la BD 
- desde la linea de comandos. Para actualizar hay que seguir los siguientes 
- pasos:
-  
- ### Step 1) Crear el directorio PROFILE_DIR
- El directorio de profile contiene el archivo application.properties con la 
- configuración necesaria para lanzar la aplicación spring-boot.
-Esto permite tener diferenciados los ambientes de ejecución.
+## Ejecución Normal
+Si todavía no tenemos ninguna de las librerías instaladas (joko-utils y [security](https://github.com/jokoframework/security)) entonces se procede con una de las siguientes opciones:
 
- La convencion utilizada es tener un directorio, dentro del cual existan 
- varios PROFILE_DIR según se requiera. Por ejemplo:
- ```shell
- /opt/starter-kit/dev
- /opt/starter-kit/qa
- ```
- 
- En el anterior ejemplo existen dos PROFILE_DIR dentro del joko-demo, el 
- primero para development y el segundo con datos de quality assurance.
- 
- Para referirse al PROFILE_DIR como parametro se usa "ext.prop.dir".
- 
- Obs.: Un archivo de ejemplo para el application.properties se encuentra en 
- `src/main/resources/application.properties.examples`
-  
-  ### Step 2) Instalar librerías Joko
-	
-Clonar los proyectos (no dentro de la misma carpeta backend o PROFILE)
-	
-https://github.com/jokoframework/joko-utils
-
-https://github.com/jokoframework/security
-
-Entrar en el directorio de cada proyecto y hacer lo siguiente:
-
--Para Joko-utils solo ejecutar `mvn install`, en caso de tener problemas descargando las dependencias ejecute
- 
- `mvn install -Ddownloader.quick.query.timestamp=false`
-
--Para [security](https://github.com/jokoframework/security) hay que entrar al proyecto en github y seguir sus instrucciones de instalacion. Esto deja instaladas las librerías que son dependencias para el Backend.
-
-### Step 3 Corren con Maven
-
-Una vez hechos estos cambios, debemos definir y exportar la siguiente variable de entorno:
+### Opción 1 - Correr con Maven
+----
+Posteriormente, nos vamos a la carpeta del proyecto, abrimos terminal y ejecutamos lo siguiente para levantar el proyecto:
 
 ```shell
-  $ export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
+  $ mvn spring-boot:run
 ```
-
-Posteriormente, podemos correr el proyecto como una aplicación de Spring Boot, o con la siguiente línea de comando (se requiere maven instalado).
-
-```shell
-  $ mvn -Dext.prop.dir=/opt/starter-kit/dev spring-boot:run
-```
-
 
 El usuario/password default que se crea con la base de datos, es admin/123456
 
 El proyecto usa por default la base de datos Embedded h2. 
 
-STS
+### Opción 2 - Correr con STS IDE
 ----
-Para poder levantar la aplicación desde un IDE, se debe añadir el parámetro 
-como argumento de la VM `-Dspring.config.location=file://` 
- con la ruta al archivo  application.properties. 
- 
- Por ejemplo en el IDE  Eclipse-STS  ir hasta debug/debug-configuracion,  añadir una nueva configuración e ir hasta la pestaña (x)Arguments Luego insertar el parámetro en el campo 'VM arguments'. 
- 
- Ejemplo:
+Primero se abre la carpeta del proyecto en el STS y esperamos a que descargue todas las dependencias necesarias.
 
-    -Dspring.config.location=file:///opt/starter-kit/application.properties -Dext
-    .prop.dir=/opt/starter-kit
-
+Una vez terminado el proceso (puede tardar unos minutos) le damos a RUN AS y luego SPRING BOOT APP.
 
 La mayoría de los IDEs soportan ejecución de aplicaciones tipo Spring Boot o 
 permiten configurar ejecuciones customizadas de maven.
 
 ### Swagger API
+----
 El proyecto cuenta con documentación del API accesible desde el swagger-ui.
 URI al swagger desde maquina HOST:
 
