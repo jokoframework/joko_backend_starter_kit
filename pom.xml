@@ -5,13 +5,13 @@
 
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-backend-starter-kit</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.6</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <version>2.4.11</version>
     </parent>
 
     <properties>
@@ -24,15 +24,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <joko-security.version>1.1.9</joko-security.version>
-        <joko-utils.version>0.6.4</joko-utils.version>
+        <joko-security.version>1.1.8</joko-security.version>
+        <joko-utils.version>0.6.5</joko-utils.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <orika-core.version>1.5.4</orika-core.version>
 
         <dependency-check.version>6.0.2</dependency-check.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <httpclient.version>4.5.12</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <commons-text.version>1.9</commons-text.version>
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
 
