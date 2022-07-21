@@ -20,7 +20,7 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "user", schema = "profile")
+@Table(name = "\"USER\"", schema = "profile")
 public class UserEntity extends BaseEntity<UserDTO> {
 
     private static final long serialVersionUID = 1L;
