@@ -25,7 +25,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <joko-security.version>1.2.11</joko-security.version>
-        <joko-utils.version>0.6.5</joko-utils.version>
+        <joko-utils.version>0.6.6</joko-utils.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <orika-core.version>1.5.4</orika-core.version>
