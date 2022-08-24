@@ -17,3 +17,4 @@ out.txt
 /scripts/tomcat_deploy.sh
 /src/main/resources/stagemonitor.properties
 run-tests.sh
+.env

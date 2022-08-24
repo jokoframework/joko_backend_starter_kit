@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebMvc
 @Profile(value = {"default"})
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer {
 
 
     @Bean
@@ -82,5 +84,13 @@ public class SwaggerConfig {
                 }
             }
         };
+    }
+
+    @Override
+    public void addViewControllers(final ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/", "/swagger-ui/");
+        // use setStatusCode(HttpStatus.XYZ) for any custom status code if required, e.g. MOVED_PERMANENTLY
+        registry.addRedirectViewController("/swagger-ui", "/swagger-ui/");
+        // any other alias
     }
 }
