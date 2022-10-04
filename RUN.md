@@ -80,7 +80,7 @@ $ mvn compile
 La forma más simple de levantar el proyecto es con la utilización de Docker.
 Para esto debes copiar el archivo de ejemplo env.sample ejecutando el siguiente comando dentro del proyecto:
 ```shell
-cp env.demo .env
+cp env.sample .env
 ``` 
 Ahí debes cambiar las variables `APPLICATION_ROOT_FOLDER` y `MAVEN_SETTINGS_FOLDER` para que apunten a los directorios en tu equipo.
 
