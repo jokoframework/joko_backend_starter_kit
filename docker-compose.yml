@@ -1,10 +1,11 @@
-version: '3.3'
+version: "3.5"
 services:
-  starter-kit:
-    container_name: joko-starter-kit
-    image: 'joko-starter-kit'
+  spring-boot:
+    image: spring-boot
     build:
-        context: ./
-        dockerfile: Dockerfile
+      context: .
     ports:
-      - '8080:8080'
+      - "8080:8080"
+      - "5005:5005"
+    volumes:
+      - ${MAVEN_SETTINGS_FOLDER}:/root/.m2

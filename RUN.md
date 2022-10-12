@@ -1,29 +1,29 @@
 ## Requisitos para ejecutar el servicio
-----
-* IDE compatible con proyectos MAVEN o tener instalado MAVEN en el SO de Linux que se esté utilizando
+* IDE compatible con proyectos MAVEN o tener instalado MAVEN en su equipo
 * Java 11 (JDK11)
-* Por default se usa la base de datos h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PostgreSQL.md)
+* Por default se usa la base de datos embedded h2. Si desea usar PostgreSQL, lea [PostgreSQL.md](PostgreSQL.md)
 
 
 ## Clonar proyecto
-----
-Debe clonar el proyecto de (Es un repositorio autenticado, consultar el URL para `clone` en):
+Debe clonar el proyecto de https://github.com/jokoframework/joko_backend_starter_kit.git
 
 ```shell
-$ git clone XXXXXX
-$ cd XXXX
+$ git clone https://github.com/jokoframework/joko_backend_starter_kit.git
+$ cd joko_backend_starter_kit
 ```
 ## Configuración de settings.xml
-----
-Una vez terminado el paso anterior (Clonar proyecto), ir a la carpeta `/home/username`, abrir terminal y ejecutar lo siguiente:
+Una vez terminado el paso anterior (Clonar proyecto), ir a su carpeta personal `/home/username`, abrir terminal y ejecutar lo siguiente:
 
 ```shell
+# Si no existe el directorio, crearlo y luego cambiarse al directorio
+$ mkdir .m2
+
 $ cd .m2
 ```
 
-Cuando estemos en la carpeta oculta .m2, se debe crear un archivo vacío llamado `settings.xml` y pegar lo siguiente dentro del archivo:
+Cuando estemos en la carpeta .m2, se debe crear un archivo vacío llamado `settings.xml` y pegar lo siguiente dentro del archivo:
 
-```shell
+```xml
   <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -57,34 +57,55 @@ Cuando estemos en la carpeta oculta .m2, se debe crear un archivo vacío llamado
     <server>
       <id>github</id>
       <username>USERNAME</username>
-      <password>PERSONAL ACCESS TOKEN/password>
+      <password>PERSONAL ACCESS TOKEN</password>
     </server>
   </servers>
 </settings>
 ```
 
-`USERNAME` corresponde al usuario de GitHub y el `PERSONAL ACCESS TOKEN` corresponde al token de accesso personal de dicho usuario. En caso de no tener un token, se puede crear uno siguiendo la siguiente guía https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
+`USERNAME` corresponde tu usuario de GitHub y el `PERSONAL ACCESS TOKEN` corresponde al token de accesso personal de dicho usuario. En caso de no tener un token, se puede crear uno siguiendo la siguiente guía https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
 
-## Ejecución Rápida
-Si ya se tienen instaladas las librerías Joko necesarias (joko-utils y [security](https://github.com/jokoframework/security)) entonces se puede proceder a empaquetar el proyecto (Ej: `mvn package`) y luego: 
+Esto permite utilizar los github packages para obtener las dependencias de joko-utils y [security](https://github.com/jokoframework/security)  
+
+Para probar que se puede compilar el proyecto ejecutar en el directorio clonado con el git
+Esto demorará unos minutos en su primera ejecución; la descarga de las librerías necesarias se realiza sólo la primera vez. 
+
+```shell
+$ mvn compile
+```
+
+## Ejecutar el proyecto de backend
 
 ### Opción 1: Ejecución Con Docker
-La forma más simple de levantar el proyecto es con la utilización de Docker, ejecutando
-el siguiente comando dentro del proyecto:
-`docker-compose up`
+La forma más simple de levantar el proyecto es con la utilización de Docker.
+Para esto debes copiar el archivo de ejemplo env.sample ejecutando el siguiente comando dentro del proyecto:
+```shell
+cp env.sample .env
+``` 
+Ahí debes cambiar las variables `APPLICATION_ROOT_FOLDER` y `MAVEN_SETTINGS_FOLDER` para que apunten a los directorios en tu equipo.
 
-### Opción 2: Ejecución Sin Docker
+Finalmente levantamos la aplicación con el comando
+```shell
+docker-compose up
+``` 
+
+ó si ya se está usando la versión del compose como plugin
+
+`docker compose up`
+
+### Opción 2: Ejecución desde el JAR empaquetado
 Se debe ejecutar lo siguiente dentro del proyecto:
-```
+```shell
+mvn clean package
 cd target/
-java -jar nombreDelArchivoJar.jar
+java -jar joko-backend-starter-kit-1.0.7.jar
 ```
 
 ## Ejecución Normal
 Si todavía no tenemos ninguna de las librerías instaladas (joko-utils y [security](https://github.com/jokoframework/security)) entonces se procede con una de las siguientes opciones:
 
 ### Opción 1 - Correr con Maven
-----
+
 Posteriormente, nos vamos a la carpeta del proyecto, abrimos terminal y ejecutamos lo siguiente para levantar el proyecto:
 
 ```shell
@@ -96,7 +117,7 @@ El usuario/password default que se crea con la base de datos, es admin/123456
 El proyecto usa por default la base de datos Embedded h2. 
 
 ### Opción 2 - Correr con STS IDE
-----
+
 Primero se abre la carpeta del proyecto en el STS y esperamos a que descargue todas las dependencias necesarias.
 
 Una vez terminado el proceso (puede tardar unos minutos) le damos a RUN AS y luego SPRING BOOT APP.
@@ -104,13 +125,13 @@ Una vez terminado el proceso (puede tardar unos minutos) le damos a RUN AS y lue
 La mayoría de los IDEs soportan ejecución de aplicaciones tipo Spring Boot o 
 permiten configurar ejecuciones customizadas de maven.
 
-### Swagger API
-----
+## Swagger API
+
 El proyecto cuenta con documentación del API accesible desde el swagger-ui.
-URI al swagger desde maquina HOST:
+URI al swagger desde máquina HOST:
 
-  http://localhost:8080/swagger-ui.html
+   http://localhost:8080/swagger-ui/
 	
-OBS. Si se desea abrir la pagina desde algún Windows u otro SO interno:
+OBS. Si se desea abrir la página desde algún Windows u otro SO interno:
 
-  http://"IP DE LA MAQUINA HOST":8080/swagger-ui.html
+   http://"IP DE LA MAQUINA HOST":8080/swagger-ui/
