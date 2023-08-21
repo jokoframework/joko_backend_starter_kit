@@ -14,4 +14,7 @@
     <!-- Colocar aquí todos los cambios que se hagan desde el setup del proyecto -->
     <!-- -->
     <include file="db-changelog-evolution.xml" relativeToChangelogFile="true"/>
+
+    <!-- Ejecuta los scripts para poblar la base de datos -->
+    <includeAll path="../sql/" relativeToChangelogFile="true"/>
 </databaseChangeLog>
