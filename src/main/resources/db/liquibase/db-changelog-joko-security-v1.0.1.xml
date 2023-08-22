@@ -7,19 +7,19 @@
 	</changeSet>
 
 	<changeSet author="danicricco" id="1518643732286-1">
-		<createSequence sequenceName="joko_security.audit_session_id_seq"/>
+		<createSequence sequenceName="audit_session_id_seq" schemaName="joko_security"/>
 	</changeSet>
 	<changeSet author="danicricco" id="1518643732286-2">
-		<createSequence sequenceName="joko_security.consumer_api_id_seq"/>
+		<createSequence sequenceName="consumer_api_id_seq" schemaName="joko_security"/>
 	</changeSet>
 	<changeSet author="danicricco" id="1518643732286-3">
-		<createSequence sequenceName="joko_security.principal_session_id_seq"/>
+		<createSequence sequenceName="principal_session_id_seq" schemaName="joko_security"/>
 	</changeSet>
 	<changeSet author="danicricco" id="1518643732286-4">
-		<createSequence sequenceName="joko_security.security_profile_id_seq"/>
+		<createSequence sequenceName="security_profile_id_seq" schemaName="joko_security"/>
 	</changeSet>
 	<changeSet author="danicricco" id="1518643732286-100">
-		<createSequence sequenceName="joko_security.id_seq"/>
+		<createSequence sequenceName="id_seq" schemaName="joko_security"/>
 	</changeSet>
 
 
