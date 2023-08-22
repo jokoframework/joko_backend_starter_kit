@@ -5,6 +5,10 @@ COPY pom.xml pom.xml
 COPY src src
 RUN apt-get update && apt-get install dos2unix && dos2unix /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
-#Start application
+# Configura variables de entorno
+RUN mkdir /opt/starter-kit && mkdir /opt/starter-kit/dev
+COPY src/main/resources/application.properties.example /opt/starter-kit/dev/application.properties
+
+# Inicia la aplicación
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["bash"]

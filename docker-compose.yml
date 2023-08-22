@@ -1,11 +1,59 @@
 version: "3.5"
 services:
   spring-boot:
+    container_name: joko-backend
     image: spring-boot
     build:
       context: .
+    network_mode: "host"
+    depends_on:
+      liquibase:
+        condition: service_completed_successfully
     ports:
       - "8080:8080"
       - "5005:5005"
     volumes:
       - ${MAVEN_SETTINGS_FOLDER}:/root/.m2
+    environment:
+      - 'SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties'
+      # Configuración de la base de datos
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:6432/joko_db'
+      - 'SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver'
+      - SPRING_DATASOURCE_USERNAME=joko_user
+      - SPRING_DATASOURCE_PASSWORD=joko_password
+      # Requisitos para Java 11 y Spring Boot 2
+      - SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_ENABLE_LAZY_LOAD_NO_TRANS=true
+      # Modo para encontrar el secreto (BD o FILE)
+      - 'joko.secret.mode=BD'
+      # Archivo que contiene el secreto para firmar los tokens
+      - 'joko.secret.file=/opt/joko/secret.key'
+      # En produccion usamos ruta relativa a donde
+      # se va a instalar el servicio de windows
+      #- 'joko.authentication.enable=true'
+  postgres:
+    container_name: joko-database
+    image: postgres
+    healthcheck:
+      test: pg_isready -U joko_user -d joko_db
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 6432:5432
+    volumes:
+      - ./init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+  liquibase:
+    container_name: joko-migrations
+    image: liquibase/liquibase
+    network_mode: "host"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./src/main/resources/db/liquibase/:/liquibase/changelog
+      - ./src/main/resources/db/sql/:/sql
+    command: --url="jdbc:postgresql://localhost:6432/joko_db" --changeLogFile=db-changelog.xml --username=joko_user --password=joko_password update

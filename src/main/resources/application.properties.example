@@ -5,11 +5,19 @@
 #
 # Tipicamente solo se configura la BD
 #
-spring.datasource.url=jdbc\:postgresql\://localhost\:5432/starter_kit
+spring.datasource.url=jdbc\:postgresql\://localhost\:6432/joko_db
 spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.username=postgres
-spring.datasource.password=postgres
+spring.datasource.username=joko_user
+spring.datasource.password=joko_password
 
 # Requisitos para Java 11 y Spring Boot 2
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
+
+
+# Modo para encontrar el secreto (BD o FILE)
+joko.secret.mode=BD
+# Archivo que contiene el secreto para firmar los tokens
+joko.secret.file=/opt/joko/secret.key
+# En produccion usamos ruta relativa a donde
+# se va a instalar el servicio de windows

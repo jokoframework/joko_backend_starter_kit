@@ -44,7 +44,7 @@ PROP_FILE=${PROFILE_DIR}/application.properties
 URL=$(grep ^spring.datasource.url $PROP_FILE | cut -d '=' -f 2)
 HOSTPORT=$(echo $URL |  cut -d '/' -f 3)
 PORT=$(echo $HOSTPORT | cut -d ':' -f 2)
-HOST=$(echo $HOSTPORT | cut -d '\' -f 1)
+HOST=$(echo $HOSTPORT | cut -d ':' -f 1)
 DB=$(echo $URL | cut -d '/' -f 4)
 
 USERNAME=$(grep ^spring.datasource.username $PROP_FILE | cut -d '=' -f 2)
