@@ -1,13 +1,13 @@
 package io.github.jokoframework.myproject.profile.manager.impl;
 
-import io.github.jokoframework.myproject.mapper.OrikaBeanMapper;
-import io.github.jokoframework.myproject.profile.manager.UserManager;
-import io.github.jokoframework.security.util.SecurityUtils;
-import io.github.jokoframework.myproject.profile.entities.UserEntity;
 import io.github.jokoframework.myproject.exceptions.UserException;
+import io.github.jokoframework.myproject.mapper.UserMapper;
+import io.github.jokoframework.myproject.profile.dto.UserDTO;
+import io.github.jokoframework.myproject.profile.entities.UserEntity;
+import io.github.jokoframework.myproject.profile.manager.UserManager;
 import io.github.jokoframework.myproject.profile.service.UserService;
 import io.github.jokoframework.myproject.web.dto.UserAuthDTO;
-import io.github.jokoframework.myproject.profile.dto.UserDTO;
+import io.github.jokoframework.security.util.SecurityUtils;
 import io.github.jokoframework.utils.csv.CsvUtils;
 import io.github.jokoframework.utils.dto_mapping.DTOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +23,9 @@ public class UserManagerImpl implements UserManager {
 	private UserService userService;
 
     @Autowired
-    private OrikaBeanMapper mapper;
+    private UserMapper userMapper;
 
-	@Override
+    @Override
     public List<UserDTO> findAll() {
         return DTOUtils.fromEntityToDTO(userService.findAll(), UserDTO.class);
     }
@@ -35,7 +35,7 @@ public class UserManagerImpl implements UserManager {
         UserEntity user = userService.getByUsername(username);
 
         if (user != null) {
-            return mapper.map(user, UserDTO.class);
+            return userMapper.toDto(user);
         }
         else {
             throw UserException.userNotFound(username);
@@ -59,7 +59,7 @@ public class UserManagerImpl implements UserManager {
             throw UserException.invalidUserPassword();
         }
 
-        UserAuthDTO user = mapper.map(userService.getByUsername(username), UserAuthDTO.class);
+        UserAuthDTO user = userMapper.toAuthDto (userService.getByUsername(username));
 
         if(user == null){
             throw UserException.invalidUserPassword();
