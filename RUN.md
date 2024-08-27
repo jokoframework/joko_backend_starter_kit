@@ -65,6 +65,8 @@ Cuando estemos en la carpeta .m2, se debe crear un archivo vacío llamado `setti
 
 `USERNAME` corresponde tu usuario de GitHub y el `PERSONAL ACCESS TOKEN` corresponde al token de accesso personal de dicho usuario. En caso de no tener un token, se puede crear uno siguiendo la siguiente guía https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
 
+Sólo es necesario el permiso: `read:packages    Download packages from GitHub Package Registry`
+
 Esto permite utilizar los github packages para obtener las dependencias de joko-utils y [security](https://github.com/jokoframework/security)  
 
 Para probar que se puede compilar el proyecto ejecutar en el directorio clonado con el git
