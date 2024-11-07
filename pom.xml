@@ -43,8 +43,10 @@
         <log4j.version>2.18.0</log4j.version>
         <thymeleaf.version>3.0.14.RELEASE</thymeleaf.version>
 
-    	<ext.prop.dir>src/main/resources</ext.prop.dir>
+        <ext.prop.dir>src/main/resources</ext.prop.dir>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
     </properties>
 
