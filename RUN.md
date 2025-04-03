@@ -80,7 +80,8 @@ $ mvn compile
 
 ### Opción 1: Ejecución Con Docker
 La forma más simple de levantar el proyecto es con la utilización de Docker.
-Para esto debes copiar el archivo de ejemplo env.sample ejecutando el siguiente comando dentro del proyecto:
+En caso de no tenerlo instalado, se debe seguir la instalación oficial según el sistema operativo: https://docs.docker.com/engine/install/
+Luego se debe copiar el archivo de ejemplo env.sample ejecutando el siguiente comando dentro del proyecto:
 ```shell
 cp env.sample .env
 ``` 
@@ -100,7 +101,7 @@ Se debe ejecutar lo siguiente dentro del proyecto:
 ```shell
 mvn clean package
 cd target/
-java -jar joko-backend-starter-kit-1.0.7.jar
+java -jar joko-backend-starter-kit-1.0.9.jar
 ```
 
 ## Ejecución Normal
