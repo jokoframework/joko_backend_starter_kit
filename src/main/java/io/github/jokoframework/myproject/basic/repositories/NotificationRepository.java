@@ -1,0 +1,20 @@
+package io.github.jokoframework.myproject.basic.repositories;
+
+import io.github.jokoframework.myproject.basic.entities.NotificationEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Notification Data Access
+ *
+ * @author copilot
+ */
+@Repository
+public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {
+    
+    List<NotificationEntity> findByUserIdOrderByCreatedDateDesc(Long userId);
+    
+    List<NotificationEntity> findByUserIdAndIsReadOrderByCreatedDateDesc(Long userId, Boolean isRead);
+}

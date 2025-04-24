@@ -6,3 +6,6 @@ INSERT INTO basic.country (id, description) VALUES ('UY', 'Uruguay');
 
 INSERT INTO profile.user (username, password, created, profile)
 VALUES ( 'admin', '$2a$06$MRQTEuDm5qsu4Rz952Ck5Oc4rsL9busImPxAzql.QY43qnSp4bWgG', now(), 'ADMIN');
+
+
+--Pedir insert para la tabla de notificaciones
