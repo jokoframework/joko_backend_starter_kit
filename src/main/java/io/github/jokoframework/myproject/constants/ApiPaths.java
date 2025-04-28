@@ -47,9 +47,11 @@ public class ApiPaths {
     public static final String PERSON_CSV = ROOT_PERSON + "/csv";
     
     /**
+     * Autor FedeTraversi
      * routes for notifications management
      */
     public static final String ROOT_NOTIFICATIONS = BASE + "/notifications";
+    public static final String NOTIFICATIONS_TYPE = ROOT_NOTIFICATIONS + "/types";
     public static final String NOTIFICATIONS_BY_USER = ROOT_NOTIFICATIONS + "/user/{userId}";
     public static final String NOTIFICATION_READ = ROOT_NOTIFICATIONS + "/{notificationId}/read";
     public static final String NOTIFICATION_DELETE = ROOT_NOTIFICATIONS + "/{notificationId}";

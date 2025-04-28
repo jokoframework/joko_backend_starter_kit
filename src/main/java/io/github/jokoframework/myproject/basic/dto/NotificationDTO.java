@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  * DTO for notification data
  *
- * @author copilot
+ * @author FedeTraversi
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NotificationDTO {
     private String id;
     private String title;
-    private String body;
+    private String message;
     private String category;
     private String timestamp;
     private String channel;
@@ -33,12 +33,12 @@ public class NotificationDTO {
         this.title = title;
     }
 
-    public String getBody() {
-        return body;
+    public String getMessage() {
+        return message;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getCategory() {

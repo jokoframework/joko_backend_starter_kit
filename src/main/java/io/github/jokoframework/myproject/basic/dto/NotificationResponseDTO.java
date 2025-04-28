@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Response DTO for notifications with metadata
  *
- * @author copilot
+ * @author FedeTraversi
  */
 public class NotificationResponseDTO extends JokoBaseResponse {
     

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Notification Data Access
  *
- * @author copilot
+ * @author FedeTraversi
  */
 @Repository
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {

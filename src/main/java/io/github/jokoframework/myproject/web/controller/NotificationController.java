@@ -3,9 +3,12 @@ package io.github.jokoframework.myproject.web.controller;
 import io.swagger.annotations.*;
 import io.github.jokoframework.myproject.constants.ApiPaths;
 import io.github.jokoframework.myproject.basic.dto.NotificationResponseDTO;
+import io.github.jokoframework.myproject.basic.dto.NotificationTypeDTO;
 import io.github.jokoframework.myproject.basic.service.NotificationService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 /**
  * Created by FedeTraversi on 4/16/25.
@@ -35,5 +38,18 @@ public class NotificationController {
             @ApiParam(value = "ID del usuario", required = true) 
             @PathVariable("userId") String userId) {
         return notificationService.getUserNotifications(userId);
+    }
+
+    @ApiOperation(value = "Obtener tipos de notificaciones",
+            notes = "Obtiene todos los tipos de notificaciones disponibles en el sistema",
+            position = 2)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Tipos de notificaciones recuperados exitosamente"),
+    })
+    @RequestMapping(value = ApiPaths.NOTIFICATIONS_TYPE,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<NotificationTypeDTO> getNotificationTypes() {
+        return notificationService.getNotificationTypes();
     }
 }

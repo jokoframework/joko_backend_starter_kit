@@ -1,6 +1,7 @@
 package io.github.jokoframework.myproject.basic.service;
 
 import io.github.jokoframework.myproject.basic.dto.NotificationResponseDTO;
+import io.github.jokoframework.myproject.basic.dto.NotificationTypeDTO;
 import io.github.jokoframework.myproject.basic.entities.NotificationEntity;
 import io.github.jokoframework.myproject.exceptions.NotificationException;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Methods for notification management
  * 
- * @author copilot
+ * @author FedeTraversi
  */
 public interface NotificationService {
     
@@ -62,4 +63,11 @@ public interface NotificationService {
      * @throws NotificationException if notification is not found
      */
     void delete(Long notificationId) throws NotificationException;
+
+    /**
+     * Get all available notification types
+     *
+     * @return list of notification types
+     */
+    List<NotificationTypeDTO> getNotificationTypes();
 }

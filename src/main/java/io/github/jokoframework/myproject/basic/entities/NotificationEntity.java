@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * Entidad para manejar las notificaciones del sistema
  * 
- * @author copilot
+ * @author FedeTraversi
  */
 @Entity
 @Table(name = "notification", schema = "basic")
@@ -68,6 +68,16 @@ public class NotificationEntity implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserEntity user;
+
+    @Size(max = 50)
+    @Column(name = "category")
+    @NotNull
+    private String category;
+
+    @Size(max = 50)
+    @Column(name = "channel")
+    @NotNull
+    private String channel;
 
     public NotificationEntity() {
         super();
@@ -137,6 +147,22 @@ public class NotificationEntity implements Serializable {
         this.user = user;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -150,6 +176,8 @@ public class NotificationEntity implements Serializable {
                 .append(readDate, that.readDate)
                 .append(isRead, that.isRead)
                 .append(userId, that.userId)
+                .append(category, that.category)
+                .append(channel, that.channel)
                 .isEquals();
     }
 
@@ -163,6 +191,8 @@ public class NotificationEntity implements Serializable {
                 .append(readDate)
                 .append(isRead)
                 .append(userId)
+                .append(category)
+                .append(channel)
                 .toHashCode();
     }
 
@@ -176,6 +206,8 @@ public class NotificationEntity implements Serializable {
                 ", readDate=" + readDate +
                 ", isRead=" + isRead +
                 ", userId=" + userId +
+                ", category='" + category + '\'' +
+                ", channel='" + channel + '\'' +
                 '}';
     }
 }

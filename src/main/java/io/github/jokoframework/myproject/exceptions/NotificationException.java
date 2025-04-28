@@ -5,7 +5,7 @@ import io.github.jokoframework.common.errors.BusinessException;
 /**
  * Exception for notification related errors
  *
- * @author copilot
+ * @author FedeTraversi
  */
 public class NotificationException extends BusinessException {
 

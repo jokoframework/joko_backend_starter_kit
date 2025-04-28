@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="20250421-1" author="copilot">
+    <changeSet id="20250421-1" author="FedeTraversi">
         <createSequence sequenceName="notification_id_seq"
                        schemaName="basic"
                        incrementBy="1"
@@ -41,5 +41,19 @@
                                 referencedTableName="USER"
                                 referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="20250426-1" author="FedeTraversi">
+        <comment>Add category and channel columns to notification table</comment>
+        
+        <addColumn tableName="notification" schemaName="basic">
+            <column name="category" type="VARCHAR(50)" defaultValue="info">
+                <constraints nullable="false"/>
+            </column>
+            <column name="channel" type="VARCHAR(50)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
 
 </databaseChangeLog>
