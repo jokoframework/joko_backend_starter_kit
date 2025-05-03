@@ -53,6 +53,9 @@ public class ApiPaths {
     public static final String ROOT_NOTIFICATIONS = API_SECURE + "/notifications";
     public static final String NOTIFICATIONS_TYPE = BASE + "/notifications" + "/types";
     public static final String NOTIFICATIONS_BY_USER = ROOT_NOTIFICATIONS + "/user/{userId}";
+    public static final String NOTIFICATIONS_CREATE = NOTIFICATIONS_BY_USER + "/create";
+    public static final String NOTIFICATIONS_DELETE = NOTIFICATIONS_BY_USER + "/delete" + "/{notificationId}";
+    public static final String NOTIFICATIONS_READ = NOTIFICATIONS_BY_USER + "/read" + "/{notificationId}";
 
     private ApiPaths() {
         

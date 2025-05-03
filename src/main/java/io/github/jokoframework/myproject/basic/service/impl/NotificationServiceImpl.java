@@ -12,11 +12,11 @@ import io.github.jokoframework.myproject.exceptions.NotificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -49,21 +49,23 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationEntity markAsRead(Long notificationId) throws NotificationException {
-        NotificationEntity notification = repository.findById(notificationId)
-                .orElseThrow(() -> NotificationException.notFound(notificationId));
-        
-        notification.setIsRead(true);
-        notification.setReadDate(Date.from(Instant.now()));
-        return repository.save(notification);
+    public void deleteNotification(Long notificationId, Long userId) throws NotificationException {
+        Optional<NotificationEntity> notification = repository.findByIdAndUserId(notificationId, userId);
+        if (!notification.isPresent()) {
+            throw NotificationException.notFoundOrNotOwned(notificationId, userId);
+        }
+        repository.deleteByIdAndUserId(notificationId, userId);
     }
 
     @Override
-    public void delete(Long notificationId) throws NotificationException {
-        if (!repository.existsById(notificationId)) {
-            throw NotificationException.notFound(notificationId);
+    public void markAsRead(Long notificationId, Long userId) throws NotificationException {
+        Optional<NotificationEntity> optionalNotification = repository.findByIdAndUserId(notificationId, userId);
+        if (!optionalNotification.isPresent()) {
+            throw NotificationException.notFoundOrNotOwned(notificationId, userId);
         }
-        repository.deleteById(notificationId);
+        NotificationEntity notification = optionalNotification.get();
+        notification.setIsRead(true);
+        repository.save(notification);
     }
 
     /**

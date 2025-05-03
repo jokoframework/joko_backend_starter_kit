@@ -4,7 +4,6 @@ import io.github.jokoframework.myproject.basic.dto.NotificationResponseDTO;
 import io.github.jokoframework.myproject.basic.dto.NotificationTypeDTO;
 import io.github.jokoframework.myproject.basic.entities.NotificationEntity;
 import io.github.jokoframework.myproject.exceptions.NotificationException;
-
 import java.util.List;
 
 /**
@@ -46,23 +45,6 @@ public interface NotificationService {
      * @return list of notifications
      */
     List<NotificationEntity> findByUserAndReadStatus(Long userId, Boolean isRead);
-    
-    /**
-     * Mark a notification as read
-     *
-     * @param notificationId the notification id
-     * @return the updated notification
-     * @throws NotificationException if notification is not found
-     */
-    NotificationEntity markAsRead(Long notificationId) throws NotificationException;
-    
-    /**
-     * Delete a notification
-     *
-     * @param notificationId the notification id
-     * @throws NotificationException if notification is not found
-     */
-    void delete(Long notificationId) throws NotificationException;
 
     /**
      * Get all available notification types
@@ -70,4 +52,22 @@ public interface NotificationService {
      * @return list of notification types
      */
     List<NotificationTypeDTO> getNotificationTypes();
+
+    /**
+     * Delete a notification by its ID
+     *
+     * @param notificationId the ID of the notification to delete
+     * @param userId the ID of the user who owns the notification
+     * @throws NotificationException if the notification doesn't exist or doesn't belong to the user
+     */
+    void deleteNotification(Long notificationId, Long userId) throws NotificationException;
+
+    /**
+     * Mark a notification as read
+     *
+     * @param notificationId the ID of the notification to mark as read
+     * @param userId the ID of the user who owns the notification
+     * @throws NotificationException if the notification doesn't exist or doesn't belong to the user
+     */
+    void markAsRead(Long notificationId, Long userId) throws NotificationException;
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Notification Data Access
@@ -17,4 +18,8 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     List<NotificationEntity> findByUserIdOrderByCreatedDateDesc(Long userId);
     
     List<NotificationEntity> findByUserIdAndIsReadOrderByCreatedDateDesc(Long userId, Boolean isRead);
+    
+    Optional<NotificationEntity> findByIdAndUserId(Long id, Long userId);
+    
+    void deleteByIdAndUserId(Long id, Long userId);
 }
