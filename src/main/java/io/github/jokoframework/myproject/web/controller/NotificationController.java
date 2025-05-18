@@ -10,6 +10,7 @@ import io.github.jokoframework.myproject.web.response.ServiceResponseDTO;
 import io.github.jokoframework.myproject.web.response.NotificationTypesResponseDTO;
 import io.github.jokoframework.myproject.web.response.CreateNotificationResponseDTO;
 import io.github.jokoframework.security.controller.SecurityConstants;
+import io.github.jokoframework.myproject.basic.mapper.NotificationMapper;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,9 @@ public class NotificationController {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     @ApiOperation(value = "Obtener tipos de notificaciones",
             notes = "Obtiene todos los tipos de notificaciones disponibles. Ej: SYSTEM, EMAIL, PUSH", position = 1)
@@ -102,14 +106,14 @@ public class NotificationController {
             @ApiParam(value = "ID del usuario", example = "123") @PathVariable("userId") Long userId,
             @RequestBody @Valid NotificationCreateDTO request) {
         NotificationEntity notification = new NotificationEntity();
-        notification.setUserId(userId); // Usando el userId de la URL en lugar del body
+        notification.setUserId(userId);
         notification.setTitle(request.getTitle());
         notification.setMessage(request.getMessage());
         notification.setCategory(request.getCategory());
         notification.setChannel(request.getChannel());
         
         NotificationEntity created = notificationService.create(notification);
-        NotificationDTO dto = mapToDTO(created);
+        NotificationDTO dto = notificationMapper.toDTO(created);
         
         CreateNotificationResponseDTO response = new CreateNotificationResponseDTO();
         response.setSuccess(true);
@@ -117,18 +121,6 @@ public class NotificationController {
         response.setData(dto);
         
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    private NotificationDTO mapToDTO(NotificationEntity entity) {
-        NotificationDTO dto = new NotificationDTO();
-        dto.setId(entity.getId().toString());
-        dto.setTitle(entity.getTitle());
-        dto.setMessage(entity.getMessage());
-        dto.setCategory(entity.getCategory());
-        dto.setTimestamp(entity.getCreatedDate().toInstant().toString());
-        dto.setChannel(entity.getChannel());
-        dto.setRead(entity.getIsRead());
-        return dto;
     }
 
     @ApiOperation(value = "Eliminar notificación",
