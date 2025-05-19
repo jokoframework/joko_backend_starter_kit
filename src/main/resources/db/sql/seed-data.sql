@@ -26,7 +26,7 @@ MERGE INTO joko_security.security_profile(id,access_token_timeout_seconds,
 
 MERGE INTO basic.country (id, description)
 KEY(ID)
-VALUES ('PY','Paraguay2'),
+VALUES ('PY','Paraguay'),
  ('AR', 'Argentina'),
  ('BR', 'Brasil'),
  ('UY', 'Uruguay');

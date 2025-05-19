@@ -1,12 +1,15 @@
 package io.github.jokoframework.myproject.web.controller;
 
 import io.github.jokoframework.common.errors.BusinessException;
+import io.github.jokoframework.common.errors.JokoApplicationException;
 import io.github.jokoframework.security.controller.SecurityConstants;
 import io.github.jokoframework.security.dto.JokoTokenResponse;
 import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
 import io.github.jokoframework.security.errors.JokoUnauthorizedException;
 import io.github.jokoframework.myproject.basic.service.MessageService;
 import io.github.jokoframework.myproject.web.response.ServiceResponseDTO;
+import io.github.jokoframework.myproject.exceptions.JokoAuthenticationException;
+import io.github.jokoframework.myproject.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +39,13 @@ public class ErrorController extends BaseRestController {
         response.setMessage(error.getMessage());
         response.setErrorCode(error.getErrorCode());
 
-		if (error.getErrorCode().endsWith("notFound")) {
-			status = HttpStatus.NOT_FOUND;
-		}
+		 // Add specific handling for authentication errors
+		if (error.getErrorCode().equals("user.error.invalid")) {
+            status = HttpStatus.UNAUTHORIZED;
+        } else if (error.getErrorCode().endsWith("notFound")) {
+            status = HttpStatus.NOT_FOUND;
+        }
+
 
 		response.setUserMessage(messages.getMessage(error.getErrorCode()));
 
@@ -70,11 +77,30 @@ public class ErrorController extends BaseRestController {
 	@ExceptionHandler({ RuntimeException.class })
 	public ResponseEntity<ServiceResponseDTO> onAuthenticationException(RuntimeException ex) {
 		ServiceResponseDTO response = new ServiceResponseDTO();
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		
+		if (ex instanceof JokoApplicationException) {
+			Throwable cause = ex.getCause();
+			if (cause instanceof JokoAuthenticationException)
+			{ 
+				Throwable cause2 = cause.getCause();
+				if (cause2 instanceof UserException) {
+					UserException userEx = (UserException) cause2;
+					response.setErrorCode(userEx.getErrorCode());
+					status = HttpStatus.UNAUTHORIZED;
+					response.setMessage(userEx.getMessage());
+				} else {
+					response.setErrorCode("authentication.error");
+					status = HttpStatus.BAD_REQUEST;
+				}
+			}
+		}
+		
 		response.setMessage(ex.getMessage());
 		response.setSuccess(false);
 		LOGGER.error(ex.getMessage(), ex);
 
-		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(response, status);
 	}
 	
 	@ExceptionHandler({ ResourceAccessException.class,
