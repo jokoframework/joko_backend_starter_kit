@@ -53,9 +53,9 @@ public class AuthorizationManagerImpl implements JokoAuthorizationManager {
                 .antMatchers(ApiPaths.API_SESSIONS).hasAnyAuthority(ADMIN.name())
                 // Notifications
                 .antMatchers(ApiPaths.NOTIFICATIONS_BY_USER,
-                        ApiPaths.NOTIFICATIONS_CREATE,
-                        ApiPaths.NOTIFICATIONS_DELETE,
-                        ApiPaths.NOTIFICATIONS_READ).hasAnyAuthority(ADMIN.name())
+                        ApiPaths.NOTIFICATIONS_USER,
+                        ApiPaths.NOTIFICATIONS_USER_BY_ID,
+                        ApiPaths.NOTIFICATIONS_USER_READ).hasAnyAuthority(ADMIN.name())
                 // Users
                 .antMatchers(ApiPaths.ROOT_USERS,
                         ApiPaths.USERS_HEARTBEAT,
