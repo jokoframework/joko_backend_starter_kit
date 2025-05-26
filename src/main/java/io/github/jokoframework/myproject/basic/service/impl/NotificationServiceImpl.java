@@ -9,6 +9,7 @@ import io.github.jokoframework.myproject.basic.enums.NotificationTypeEnum;
 import io.github.jokoframework.myproject.basic.repositories.NotificationRepository;
 import io.github.jokoframework.myproject.basic.service.NotificationService;
 import io.github.jokoframework.myproject.exceptions.NotificationException;
+import io.github.jokoframework.myproject.basic.mapper.NotificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private NotificationRepository repository;
+    
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     @Override
     public NotificationEntity create(NotificationEntity notification) {
@@ -65,6 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         NotificationEntity notification = optionalNotification.get();
         notification.setIsRead(true);
+        notification.setReadDate(Date.from(Instant.now()));
         repository.save(notification);
     }
 
@@ -77,7 +82,7 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationResponseDTO getUserNotifications(String userId) {
         List<NotificationEntity> entities = findByUser(Long.parseLong(userId));
         List<NotificationDTO> notifications = entities.stream()
-                .map(this::mapToDTO)
+                .map(notificationMapper::toDTO)
                 .collect(Collectors.toList());
         
         String timestamp = Instant.now().toString();
@@ -106,20 +111,5 @@ public class NotificationServiceImpl implements NotificationService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Mapea una entidad NotificationEntity a NotificationDTO
-     */
-    private NotificationDTO mapToDTO(NotificationEntity entity) {
-        NotificationDTO dto = new NotificationDTO();
-        dto.setId(entity.getId().toString());
-        dto.setTitle(entity.getTitle());
-        dto.setMessage(entity.getMessage());
-        dto.setCategory(entity.getCategory());
-        dto.setTimestamp(entity.getCreatedDate().toInstant().toString());
-        dto.setChannel(entity.getChannel());
-        dto.setRead(entity.getIsRead());
-        return dto;
     }
 }

@@ -8,7 +8,7 @@
         <createSequence sequenceName="notification_id_seq"
                        schemaName="basic"
                        incrementBy="1"
-                       startValue="1"/>
+                       startValue="7"/>
 
         <createTable tableName="notification" schemaName="basic"
                     remarks="Stores system notifications for users">
