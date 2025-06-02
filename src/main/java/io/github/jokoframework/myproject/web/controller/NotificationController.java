@@ -79,7 +79,7 @@ public class NotificationController {
             @ApiImplicitParam(name = JOKO_STARTER_KIT_VERSION_HEADER, dataType = "String", paramType = "header", required = false, value = "Versión", defaultValue = JOKO_STARTER_KIT_VERSION)
     })
     public ResponseEntity<?> getUserNotifications(
-            @ApiParam(value = "ID del usuario", example = "123") @PathVariable("userId") String userId) {
+            @ApiParam(value = "ID del usuario", example = "123") @PathVariable("userId") Long userId) {
         return new ResponseEntity<>(notificationService.getUserNotifications(userId), HttpStatus.OK);
     }
 

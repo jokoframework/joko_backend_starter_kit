@@ -14,12 +14,11 @@ import java.util.List;
 public interface NotificationService {
     
     /**
-     * Get user notifications
-     *
-     * @param userId the user id
-     * @return the notification response DTO
+     * Obtiene las notificaciones para un usuario específico
+     * @param userId ID del usuario
+     * @return NotificationResponseDTO con la lista de notificaciones y metadatos
      */
-    NotificationResponseDTO getUserNotifications(String userId);
+    NotificationResponseDTO getUserNotifications(Long userId);
 
     /**
      * Create a new notification
