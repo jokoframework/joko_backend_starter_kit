@@ -79,7 +79,7 @@ public class NotificationController {
             @ApiImplicitParam(name = JOKO_STARTER_KIT_VERSION_HEADER, dataType = "String", paramType = "header", required = false, value = "Versión", defaultValue = JOKO_STARTER_KIT_VERSION)
     })
     public ResponseEntity<?> getUserNotifications(
-            @ApiParam(value = "ID del usuario", example = "123") @PathVariable("userId") String userId) {
+            @ApiParam(value = "ID del usuario", example = "123") @PathVariable("userId") Long userId) {
         return new ResponseEntity<>(notificationService.getUserNotifications(userId), HttpStatus.OK);
     }
 
@@ -95,7 +95,7 @@ public class NotificationController {
                         })),
             @ApiResponse(code = 400, message = "Datos de la notificación inválidos")
     })
-    @RequestMapping(value = ApiPaths.NOTIFICATIONS_CREATE, method = RequestMethod.POST,
+    @RequestMapping(value = ApiPaths.NOTIFICATIONS_USER, method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiImplicitParams({
@@ -135,7 +135,7 @@ public class NotificationController {
                         })),
             @ApiResponse(code = 404, message = "Notificación no encontrada o no pertenece al usuario")
     })
-    @RequestMapping(value = ApiPaths.NOTIFICATIONS_DELETE, method = RequestMethod.DELETE,
+    @RequestMapping(value = ApiPaths.NOTIFICATIONS_USER_BY_ID, method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Token de acceso del usuario"),
@@ -163,7 +163,7 @@ public class NotificationController {
                         })),
             @ApiResponse(code = 404, message = "Notificación no encontrada o no pertenece al usuario")
     })
-    @RequestMapping(value = ApiPaths.NOTIFICATIONS_READ, method = RequestMethod.PUT,
+    @RequestMapping(value = ApiPaths.NOTIFICATIONS_USER_READ, method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiImplicitParams({
             @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Token de acceso del usuario"),

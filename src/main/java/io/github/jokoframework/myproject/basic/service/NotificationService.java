@@ -19,7 +19,7 @@ public interface NotificationService {
      * @param userId the user id
      * @return the notification response DTO
      */
-    NotificationResponseDTO getUserNotifications(String userId);
+    NotificationResponseDTO getUserNotifications(Long userId);
 
     /**
      * Create a new notification

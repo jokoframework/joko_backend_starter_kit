@@ -79,8 +79,8 @@ public class NotificationServiceImpl implements NotificationService {
      * @return NotificationResponseDTO con la lista de notificaciones y metadatos
      */
     @Override
-    public NotificationResponseDTO getUserNotifications(String userId) {
-        List<NotificationEntity> entities = findByUser(Long.parseLong(userId));
+    public NotificationResponseDTO getUserNotifications(Long userId) {
+        List<NotificationEntity> entities = findByUser(userId);
         List<NotificationDTO> notifications = entities.stream()
                 .map(notificationMapper::toDTO)
                 .collect(Collectors.toList());
