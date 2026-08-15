@@ -45,7 +45,9 @@ docker compose up
 mvn spring-boot:run
 ```
 
-Para una guía más detallada visite [RUN.md](RUN.md).
+Para una guía más detallada visite [RUN.md](RUN.md), que incluye las variables
+de entorno opcionales (`JOKO_SRC_DIR`, `JOKO_REMOTE_ROOT`, `SSH_TARGET`) y el
+flujo de sincronización entre máquinas con `rsync`.
 
 ## Personalizarlo (para crear un proyecto nuevo)
 * `rm -rf .git && git init` para desvincularlo de este repositorio.

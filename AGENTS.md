@@ -14,6 +14,13 @@ Spring Boot 2.7.16 / Java 11 / Maven backend starter kit (Joko framework). Docs 
 - Maven: `mvn spring-boot:run` — uses embedded H2 DB (`~/.joko-DEMO-DB`, `sa`/`123456`). Default API login: `admin`/`123456`. Swagger at `/swagger-ui/` (`/` redirects there). Jar: `target/joko-backend-starter-kit-1.0.9.jar`.
 - Grab a token for authenticated endpoints: `scripts/token-localhost.sh` (logs in via `/api/login` → `/api/token/user-access`, prints access token).
 
+## Agent routing
+
+- **Devops/tooling requests on this repo** (turn-key bootstrap, SDKMAN/Java/Maven, building `joko-utils`/`joko-security` locally, `xml-apis-ext`, Docker/docker-compose, OWASP dependency-check, `.env`, rsync machine sync) → **load the `joko-devops` skill first** (`.opencode/skills/joko-devops/SKILL.md`) and follow its gotchas, flags, and commands. Do not hand-roll those steps.
+- **Never mutate git state**: no commits, no `git config`, `clone`, `init`, `reset`, force operations, etc. Only read-only git is allowed (`status`, `diff`, `log`). The user runs anything that writes to `.git`; if a commit fails for missing identity, hand them the two `git config` commands — don't run them.
+- **Cross-machine sync** between this box (no git write creds) and the remote uses rsync with env-var placeholders (`JOKO_SRC_DIR`, `JOKO_REMOTE_ROOT`, `SSH_TARGET`) — see the skill for exact flags/exclusions. This box may be a non-git copy after a move — don't assume `.git` exists.
+- Respond to the user in Spanish; keep AGENTS.md and agent-facing notes in English.
+
 ## Code conventions
 
 - Entrypoint `Application.java` `@ComponentScan`/`@EnableJpaRepositories`/`@EntityScan` over all `io.github.jokoframework` packages (this also picks up the `joko-security` lib beans).

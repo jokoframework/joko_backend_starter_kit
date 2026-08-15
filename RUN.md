@@ -33,6 +33,35 @@ El directorio donde se clonan los repos se puede cambiar con la variable
 JOKO_SRC_DIR=/ruta/a/donde/clonar ./scripts/turn-key.sh
 ```
 
+## Variables de entorno opcionales (turn-key y sync entre máquinas)
+
+Estas variables son de **shell**: se usan con `scripts/turn-key.sh` y con el
+`rsync` de sincronización entre máquinas. **No van en `.env`**: ese archivo es
+exclusivamente para `docker-compose`, que solo consume `MAVEN_SETTINGS_FOLDER`.
+
+| Variable           | Uso                                          | Default               |
+| ------------------ | -------------------------------------------- | --------------------- |
+| `JOKO_SRC_DIR`     | Raíz local donde clonar los repos de joko    | `~/git/jokoframework` |
+| `JOKO_REMOTE_ROOT` | Raíz del proyecto en el remoto (absoluta)    | (sin default)         |
+| `SSH_TARGET`       | Target ssh `usuario@host` del remoto         | (sin default)         |
+
+Ejemplo de sync local → remoto:
+
+```shell
+export JOKO_SRC_DIR="$HOME/git/jokoframework"
+export JOKO_REMOTE_ROOT="/git/jokoframework"   # ruta absoluta en el remoto
+export SSH_TARGET="usuario@host"
+
+rsync -avz --exclude='.git/' --exclude='target/' --exclude='.idea/' \
+  --exclude='.vscode/' --exclude='.env' \
+  "${JOKO_SRC_DIR}/joko_backend_starter_kit/" \
+  "${SSH_TARGET}:${JOKO_REMOTE_ROOT}/joko_backend_starter_kit/"
+```
+
+Para el sentido inverso (remoto → local) agregá `--delete`. `JOKO_REMOTE_ROOT`
+debe ser una ruta absoluta: un `~` dentro de la variable no se expande del lado
+remoto al ir entre comillas.
+
 ## 2) Ejecutar el backend
 
 ### Opción 1: Docker (recomendada)
