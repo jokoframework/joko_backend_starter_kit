@@ -36,6 +36,9 @@ JOKO_SRC_DIR=/ruta/a/donde/clonar ./scripts/turn-key.sh
 ## 2) Ejecutar el backend
 
 ### Opción 1: Docker (recomendada)
+En caso de no tener Docker instalado, seguí la instalación oficial según tu
+sistema operativo: https://docs.docker.com/engine/install/
+
 ```shell
 docker compose up
 ```
