@@ -3,12 +3,20 @@ package io.github.jokoframework.myproject.basic.entities;
 import io.github.jokoframework.myproject.profile.entities.UserEntity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,17 +31,10 @@ public class NotificationEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    @GenericGenerator(
-            name = "notificationSequenceGenerator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "notification_id_seq"),
-                    @Parameter(name = "initial_value", value = "7"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
     @Id
-    @GeneratedValue(generator = "notificationSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notificationSequenceGenerator")
+    @SequenceGenerator(name = "notificationSequenceGenerator", sequenceName = "notification_id_seq",
+            schema = "basic", allocationSize = 1)
     @Basic(optional = false)
     @Column(name = "id")
     @NotNull

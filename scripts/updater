@@ -18,8 +18,9 @@ function seed_db
     scripts/lib/seed-db $@
 }
 
-function liquibase_update {
-    scripts/lib/liquibase-update
+function flyway_note {
+    echo "Flyway aplica el esquema al arrancar la aplicación (src/main/resources/db/migration)."
+    echo "No hay paso separado de Liquibase."
 }
 
 function drop_and_create_db
@@ -30,27 +31,26 @@ function drop_and_create_db
 function show_help
 {
     echo "The following options are:"
-    echo "    update: Update liquibase"
-    echo "    fresh: Drop and create DB, liquibase, seed"
-    echo "    schema: Drop and create DB, liquibase"
+    echo "    update: Flyway corre al arrancar la app (no-op aquí)"
+    echo "    fresh: Drop and create DB (Flyway al próximo arranque)"
+    echo "    schema: Drop and create DB (Flyway al próximo arranque)"
     echo "    seed: Just run the seed-date.sql script. This will clean the DB and add initial fake but working data"
     echo "    help: Show this help"
 }
 
 case "$1" in
     'update')
-	liquibase_update
+	flyway_note
 	;;
     'schema')
 	drop_and_create_db
 	check_status $?
-	liquibase_update
+	flyway_note
 	;;
     'fresh')
 	drop_and_create_db
 	check_status $?
-	liquibase_update
-	check_status $?
+	flyway_note
 	;;
     'seed')
 	seed_db $@

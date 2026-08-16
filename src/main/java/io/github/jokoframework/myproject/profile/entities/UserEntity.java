@@ -6,12 +6,23 @@ import io.github.jokoframework.myproject.profile.dto.UserDTO;
 import io.github.jokoframework.utils.dto_mapping.BaseEntity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -20,22 +31,15 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "\"USER\"", schema = "profile")
+@Table(name = "USER", schema = "profile")
 public class UserEntity extends BaseEntity<UserDTO> {
 
     private static final long serialVersionUID = 1L;
     
-    @GenericGenerator(
-            name = "userSequenceGenerator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "user_id_seq"),
-                    @Parameter(name = "initial_value", value = "999999"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
     @Id
-    @GeneratedValue(generator = "userSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSequenceGenerator")
+    @SequenceGenerator(name = "userSequenceGenerator", sequenceName = "user_id_seq",
+            schema = "profile", allocationSize = 1)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;

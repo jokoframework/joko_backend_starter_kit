@@ -2,8 +2,12 @@ package io.github.jokoframework.myproject.basic.entities;
 
 import io.github.jokoframework.myproject.basic.dto.CountryDTO;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import io.github.jokoframework.utils.dto_mapping.*;
 
 /**

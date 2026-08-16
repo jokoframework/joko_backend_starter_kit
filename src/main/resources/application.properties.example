@@ -1,15 +1,22 @@
 #
-# Ejemplo de configuracion para un proyecto tipo
+# Ejemplo de configuracion contra PostgreSQL
 #
 
-#
-# Tipicamente solo se configura la BD
-#
-spring.datasource.url=jdbc\:postgresql\://localhost\:5432/starter_kit
+spring.datasource.url=jdbc:postgresql://localhost:5432/starter_kit
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.datasource.username=postgres
 spring.datasource.password=postgres
 
-# Requisitos para Java 11 y Spring Boot 2
+spring.jpa.hibernate.ddl-auto=none
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
+
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migration
+
+joko.authentication.enable=true
+joko.secret.mode=BD
+joko.security.jwt.issuer=joko-starter-kit
+joko.security.jwt.audience=joko-starter-kit
+joko.security.storage.type=postgres
+joko.security.web.enabled=true
