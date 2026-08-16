@@ -1,12 +1,13 @@
 # Guía de ejecución
 
 ## Requisitos
-* Sistema UNIX (Linux/macOS) con `bash`, `git`, `curl`, `unzip` y `perl`.
+
+* Sistema UNIX (Linux/macOS) con `bash`, `git`, `curl`.
 * No hace falta tener Java ni Maven instalados: el script de puesta a punto
-  los instala vía SDKMAN.
-* **No se necesita ningún Personal Access Token (PAT) de GitHub.** Las
-  dependencias `joko-security` y `joko-utils` se compilan desde los
-  repositorios públicos de jokoframework.
+  los instala vía SDKMAN si faltan (Java 17+).
+* **No se necesita ningún Personal Access Token (PAT) de GitHub.**
+  `joko-utils` se clona del repositorio público. **joko-security 2.x** se
+  instala desde el parent modular local (`JOKO_SECURITY_SRC`).
 
 ## 1) Puesta a punto automática (turn-key)
 
@@ -16,40 +17,38 @@ Desde la raíz del proyecto:
 ./scripts/turn-key.sh
 ```
 
-El script es idempotente (se puede volver a ejecutar sin problema) y hace lo
-siguiente:
-1. Instala SDKMAN si falta, y con él Java 11 y Maven 3.9.x si faltan.
-2. Clona los repositorios públicos `jokoframework/joko-utils` (tag `v0.6.8`)
-   y `jokoframework/security` (tag `v1.2.16`).
-3. Los compila e instala en el repositorio local de Maven (`~/.m2/repository`).
-4. Corrige una descarga problemática conocida de `xml-apis-ext`.
-5. Deja configurado `.env` para Docker.
-6. Verifica que el proyecto compila.
+El script es idempotente y hace lo siguiente:
 
-El directorio donde se clonan los repos se puede cambiar con la variable
-`JOKO_SRC_DIR`:
+1. Instala SDKMAN si falta, y con él Java 17 y Maven 3.9.x si el Java del
+   sistema es menor a 17.
+2. Lee `joko-utils.version` y `joko-security.version` del `pom.xml`.
+   Si esos artefactos **ya están en `~/.m2`**, no clona ni compila.
+3. Si faltan: clona `joko-utils` (tag `v{versión}`) y/o instala el parent
+   `joko-security` 2.x desde el hermano `../security` (`JOKO_SECURITY_SRC`).
+4. Deja configurado `.env` para Docker.
+5. Verifica que el proyecto compila.
+
+Variables de entorno opcionales:
+
+| Variable | Uso | Default |
+|---|---|---|
+| `JOKO_SRC_DIR` | Dónde clonar `joko-utils` | `~/git/jokoframework` |
+| `JOKO_SECURITY_SRC` | Parent modular 2.x | `../security` (hermano del kit) |
+| `JOKO_REMOTE_ROOT` | Raíz del proyecto en el remoto (rsync) | (sin default) |
+| `SSH_TARGET` | Target ssh `usuario@host` | (sin default) |
 
 ```shell
-JOKO_SRC_DIR=/ruta/a/donde/clonar ./scripts/turn-key.sh
+JOKO_SECURITY_SRC=/ruta/al/security ./scripts/turn-key.sh
 ```
 
-## Variables de entorno opcionales (turn-key y sync entre máquinas)
-
-Estas variables son de **shell**: se usan con `scripts/turn-key.sh` y con el
-`rsync` de sincronización entre máquinas. **No van en `.env`**: ese archivo es
-exclusivamente para `docker-compose`, que solo consume `MAVEN_SETTINGS_FOLDER`.
-
-| Variable           | Uso                                          | Default               |
-| ------------------ | -------------------------------------------- | --------------------- |
-| `JOKO_SRC_DIR`     | Raíz local donde clonar los repos de joko    | `~/git/jokoframework` |
-| `JOKO_REMOTE_ROOT` | Raíz del proyecto en el remoto (absoluta)    | (sin default)         |
-| `SSH_TARGET`       | Target ssh `usuario@host` del remoto         | (sin default)         |
+Las variables de shell **no van en `.env`**: ese archivo es solo para
+`docker compose` (`MAVEN_SETTINGS_FOLDER`).
 
 Ejemplo de sync local → remoto:
 
 ```shell
 export JOKO_SRC_DIR="$HOME/git/jokoframework"
-export JOKO_REMOTE_ROOT="/git/jokoframework"   # ruta absoluta en el remoto
+export JOKO_REMOTE_ROOT="/git/jokoframework"
 export SSH_TARGET="usuario@host"
 
 rsync -avz --exclude='.git/' --exclude='target/' --exclude='.idea/' \
@@ -58,39 +57,136 @@ rsync -avz --exclude='.git/' --exclude='target/' --exclude='.idea/' \
   "${SSH_TARGET}:${JOKO_REMOTE_ROOT}/joko_backend_starter_kit/"
 ```
 
-Para el sentido inverso (remoto → local) agregá `--delete`. `JOKO_REMOTE_ROOT`
-debe ser una ruta absoluta: un `~` dentro de la variable no se expande del lado
-remoto al ir entre comillas.
-
 ## 2) Ejecutar el backend
 
-### Opción 1: Docker (recomendada)
-En caso de no tener Docker instalado, seguí la instalación oficial según tu
-sistema operativo: https://docs.docker.com/engine/install/
+### Opción 1: Docker
 
 ```shell
 docker compose up
 ```
+
 Levanta el servicio en http://localhost:8080 (debug remoto en el puerto 5005).
-El `docker-compose.yml` monta tu `~/.m2` como `/root/.m2` dentro del
-contenedor.
+El `docker-compose.yml` monta tu `~/.m2` como `/root/.m2` dentro del contenedor.
 
 ### Opción 2: Maven
+
 ```shell
 mvn spring-boot:run
+# o
+./mvnw spring-boot:run
 ```
-Usa por defecto una base de datos embebida H2 (`~/.joko-DEMO-DB`, usuario
-`sa` / `123456`). Si querés usar PostgreSQL, leé [PostgreSQL.md](PostgreSQL.md).
 
-## Credenciales y endpoints
-* Usuario/clave por defecto: `admin` / `123456`
-* Swagger UI: http://localhost:8080/swagger-ui/
-* Los endpoints autenticados viven bajo `/api/secure/**`. Para obtener un
-  token de acceso: `scripts/token-localhost.sh`.
+Usa H2 en `~/.joko-starter-kit-db`. Flyway crea el esquema al arrancar.
 
-## Empaquetado
+- Swagger: http://localhost:8080/swagger-ui.html
+- Usuario: `admin` / `123456`
+- Token: `scripts/token-localhost.sh`
+
+## 3) Autenticación
+
+```http
+POST /api/login
+Content-Type: application/json
+
+{"username":"admin","password":"123456"}
+```
+
+La respuesta trae el refresh token en `secret`. Luego:
+
+```http
+POST /api/token/user-access
+X-JOKO-AUTH: {refresh_token}
+```
+
+Las rutas protegidas usan el access token en el mismo header `X-JOKO-AUTH`.
+No se usa `Authorization: Bearer`.
+
+## 4) Smoke test
+
+Comprueba el contrato JWT de dos pasos: público sin token, login → refresh,
+access solo con refresh, API de negocio solo con access, logout solo con
+refresh (revoca ese refresh; el access ya emitido sigue hasta `exp`).
+
+Demo: `admin` / `123456`. Header: `X-JOKO-AUTH` (JWT crudo, sin `Bearer`).
+
 ```shell
-mvn clean package
+export BASE_URL="${BASE_URL:-http://localhost:8080}"
+# remoto: export BASE_URL=http://192.168.10.24:8080
 ```
-El JAR queda en `target/joko-backend-starter-kit-<version>.jar` (mirá
-`<version>` en `pom.xml`).
+
+Atajo de los primeros pasos (sin logout): `./scripts/smoke-api.sh`
+(`BASE_URL` también aplica).
+
+### Resultados esperados
+
+| Paso | Llamada | HTTP |
+|---|---|---|
+| 1 | `GET /api/countries` sin token | 200 |
+| 1b | `GET /api/secure/users/admin` sin token | 401 |
+| 2 | `POST /api/login` | 200 (`secret` = refresh) |
+| 3 | `POST /api/token/user-access` + refresh | 200 (`secret` = access) |
+| 4 | `GET /api/secure/users/admin` + access | 200 |
+| 4b | misma ruta + refresh | 403 |
+| 5 | `POST /api/logout` + access | 403 |
+| 5b | `POST /api/logout` + refresh | 202 |
+| 5c | `user-access` otra vez con ese refresh | 401 |
+| 5d | protegida con el access de antes | 200 (hasta que expire) |
+
+### Curls
+
+```shell
+# 1) Público, sin autenticación
+curl -sS -w '\nHTTP %{http_code}\n' "$BASE_URL/api/countries"
+
+# 1b) Protegido, sin token
+curl -sS -w '\nHTTP %{http_code}\n' "$BASE_URL/api/secure/users/admin"
+
+# 2) Login → refresh token
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"admin","password":"123456"}' \
+  "$BASE_URL/api/login" | tee /tmp/joko-login.json
+
+REFRESH=$(python3 -c "import json; print(json.load(open('/tmp/joko-login.json')).get('secret') or '')")
+
+# 3) Access token (exige refresh)
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -X POST -H "X-JOKO-AUTH: $REFRESH" \
+  "$BASE_URL/api/token/user-access" | tee /tmp/joko-access.json
+
+ACCESS=$(python3 -c "import json; print(json.load(open('/tmp/joko-access.json')).get('secret') or '')")
+
+# 4) Consulta protegida con access
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -H "X-JOKO-AUTH: $ACCESS" \
+  "$BASE_URL/api/secure/users/admin"
+
+# 4b) La misma ruta con refresh (403: tipo de token incorrecto)
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -H "X-JOKO-AUTH: $REFRESH" \
+  "$BASE_URL/api/secure/users/admin"
+
+# 5) Logout con access (403: logout pide autoridad Refresh)
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -X POST -H "X-JOKO-AUTH: $ACCESS" \
+  "$BASE_URL/api/logout"
+
+# 5b) Logout con refresh (202: revoca ese JTI)
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -X POST -H "X-JOKO-AUTH: $REFRESH" \
+  "$BASE_URL/api/logout"
+
+# 5c) Ese refresh ya no emite access
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -X POST -H "X-JOKO-AUTH: $REFRESH" \
+  "$BASE_URL/api/token/user-access"
+
+# 5d) El access emitido antes del logout sigue válido hasta exp
+curl -sS -w '\nHTTP %{http_code}\n' \
+  -H "X-JOKO-AUTH: $ACCESS" \
+  "$BASE_URL/api/secure/users/admin"
+```
+
+Otros públicos útiles: `GET /api/notifications/types`,
+`GET /api/secure/users/heartbeat`, `GET /v3/api-docs`,
+`GET /swagger-ui.html` (302 → `/swagger-ui/index.html`).

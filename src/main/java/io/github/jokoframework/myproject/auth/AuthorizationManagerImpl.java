@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +22,6 @@ import io.github.jokoframework.security.api.JokoAuthorizationManager;
 import io.github.jokoframework.myproject.constants.ApiPaths;
 import io.github.jokoframework.myproject.security.CustomAuthenticationDetails;
 
-/**
- *
- * @author bsandoval
- *
- */
 @Component
 public class AuthorizationManagerImpl implements JokoAuthorizationManager {
 
@@ -34,41 +29,33 @@ public class AuthorizationManagerImpl implements JokoAuthorizationManager {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(csrf -> csrf.disable());
+        httpSecurity.headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
+                .httpStrictTransportSecurity(hsts -> hsts.disable()));
 
-        httpSecurity
-                .httpBasic()
-                .authenticationDetailsSource(authenticationDetailsSource())
-                .and()
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/index.html").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/v2/api-docs/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/**/heartbeat").permitAll()
-                .antMatchers(ApiPaths.COUNTRIES).permitAll()
-                .antMatchers(ApiPaths.NOTIFICATIONS_TYPE).permitAll()
-                .antMatchers(ApiPaths.API_SESSIONS).hasAnyAuthority(ADMIN.name())
-                // Notifications
-                .antMatchers(ApiPaths.NOTIFICATIONS_BY_USER,
+        httpSecurity.httpBasic(basic -> basic.authenticationDetailsSource(authenticationDetailsSource()));
+
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/index.html").permitAll()
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/diagnostic/heartbeat",
+                        ApiPaths.USERS_HEARTBEAT,
+                        ApiPaths.PERSON_HEARTBEAT).permitAll()
+                .requestMatchers(ApiPaths.COUNTRIES).permitAll()
+                .requestMatchers(ApiPaths.NOTIFICATIONS_TYPE).permitAll()
+                .requestMatchers(ApiPaths.API_SESSIONS).hasAnyAuthority(ADMIN.name())
+                .requestMatchers(ApiPaths.NOTIFICATIONS_BY_USER,
                         ApiPaths.NOTIFICATIONS_USER,
                         ApiPaths.NOTIFICATIONS_USER_BY_ID,
                         ApiPaths.NOTIFICATIONS_USER_READ).hasAnyAuthority(ADMIN.name())
-                // Users
-                .antMatchers(ApiPaths.ROOT_USERS,
+                .requestMatchers(ApiPaths.ROOT_USERS,
                         ApiPaths.USERS_HEARTBEAT,
                         ApiPaths.USERS_BY_NAME,
-                        ApiPaths.USERS_CSV).hasAnyAuthority(ADMIN.name());
-
-        // Only in dev profile,
-        // Allows X-Frame-Options headers sent by H2 console.
-        // http://docs.spring.io/spring-security/site/docs/current/reference/html/headers.html
-        httpSecurity
-                .headers()
-                .frameOptions().sameOrigin()
-                .httpStrictTransportSecurity().disable();
+                        ApiPaths.USERS_CSV).hasAnyAuthority(ADMIN.name()));
     }
 
     @Override
@@ -79,13 +66,6 @@ public class AuthorizationManagerImpl implements JokoAuthorizationManager {
 
     private AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource() {
         return new AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails>() {
-            /**
-             * We want to pass extra information to the authentication provider
-             * such as the 'custom' parameter of the request in the login.
-             *
-             * Inside the provider you can access that information with:
-             * authentication.getDetails()
-             */
             @Override
             public WebAuthenticationDetails buildDetails(HttpServletRequest request) {
                 CustomAuthenticationDetails details = new CustomAuthenticationDetails(request);
@@ -104,7 +84,6 @@ public class AuthorizationManagerImpl implements JokoAuthorizationManager {
                 }
                 return Optional.empty();
             }
-
         };
     }
 }

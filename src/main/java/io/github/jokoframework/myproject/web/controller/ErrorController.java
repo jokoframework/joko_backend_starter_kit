@@ -2,7 +2,7 @@ package io.github.jokoframework.myproject.web.controller;
 
 import io.github.jokoframework.common.errors.BusinessException;
 import io.github.jokoframework.common.errors.JokoApplicationException;
-import io.github.jokoframework.security.controller.SecurityConstants;
+import io.github.jokoframework.security.constantes.SecurityConstants;
 import io.github.jokoframework.security.dto.JokoTokenResponse;
 import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
 import io.github.jokoframework.security.errors.JokoUnauthorizedException;

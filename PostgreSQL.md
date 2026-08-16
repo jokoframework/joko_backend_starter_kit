@@ -1,73 +1,53 @@
-Para ejecutar el Joko Backend, se debe crear la base de datos en el servidor PostgreSQL
-Para eso, el proyecto incluye las herramientas basadas en [Liquibase](https://www.liquibase.org/)
+# PostgreSQL
 
-El liquibase es un programa hecho en Java, que puede ser ejecutado desde la línea de comando, o como un plugin de maven. 
-Describimos a continuación las instrucciones para ejecutarlas desde unos scripts proveidos por el proyecto.
+El esquema lo aplica **Flyway** al arrancar la aplicación
+(`src/main/resources/db/migration`). No hace falta Liquibase.
 
-  ### Step 1) Configuración del archivo "development.vars"
-  
-  Se debe configurar el archivo "development.vars", que servirá para la 
-  ejecucion de liquibase. Este es un archivo bash que debe tener dos variables: 
-  
-  - MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
-   el Artifactory interno, sería el recien descargado. Ej. ` $HOME/.m2/settings.xml` 
-   puede utilizar de ejemplo el archivo que se encuentra en 
-   `src/main/resources/settings.xml.example` copiando a `$HOME/.m2/settings.xml`
-  - `PROFILE_DIR`: Directorio de perfil creado en el punto inicial. Ej. 
-  `/opt/starter-kit`
-  
-  Un ejemplo de este archivo se encuenta en `src/main/resources/development.vars`.
-  
-  Se recomienda que este archivo esté fuera del workspsace en el directorio 
-  padre de los PROFILE_DIR. Ejemplo: ``/opt/starter-kit/``.
-  
-  ### Step 2) Configuración de variables de entorno
-  Exportar variable, desde la terminal:
-  ```shell
-    $ export ENV_VARS="/opt/starter-kit/development.vars"
-  ```
-  Obs.: El truco es tener varios archivos `profile.vars` y cada uno apuntando a
-   un `PROFILE_DIR` diferente. 
-   
+## 1. Crear la base
 
-  ### Step3 ) Ejecutar Liquibase.
-  
-1.- Crea la schema de cero.
-  ```shell
-    $ ./scripts/updater fresh
-  ```
-2.- Inicializa datos básicos (o reinicializa)
-  ```shell
-    $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
-    $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
-  ```
-  **OJO**:
-* El parámetro `fresh` elimina la base de datos que está configurada en el `application.properties` y la vuelve a crear desde cero con la última versión del schema
-  
-* Los parámetros `seed <file>` cargan datos indicados en el archivo `<file>`, para los casos en que se ejecute `fresh` siempre debe ir seguido de un `seed` con el archivo que (re)inicializa los datos básicos del sistema 
-  
-* Los datos básicos del sistema estan en dos archivos:
-
-`seed-data.sql`: Todos la configuracion base que es independiente al ambiente
-`[ambiente]-config`. Por ejemplo: `dev-config.sql` . Posee los parametros de configuracion adecuados  para el ambiente de desarrollo. Tambien existe `qa-config` y `prod-config`
-  
-3.- Liquibase permite tener una evulución del modelo siguiendo las reglas para su changelog, y para correr el liquibase en modo de actualización ejecute:  
+```sql
+CREATE DATABASE starter_kit;
 ```
-    $ ./scripts/updater update
-  ```
 
-Más detalles en la documentación del Liquibase.
+## 2. Configurar el datasource
 
-OBS. Se recomienda este metodo, ya que con STS habria que hacer ciertas configuraciones extras para ejecutar desde ahi.
-Queda a eleccion del lector. En caso de que se quiera volver a tener el servidor con las configuraciones default en el PostgreSQL, se deja unas instrucciones a continuación.
+Copiá `src/main/resources/application.properties.example` a un archivo de
+perfil (por ejemplo `/opt/starter-kit/dev/application.properties`) y ajustá
+URL, usuario y password.
 
-A partir de este punto, cada vez que se decida levantar y bajar el servidor del Backend, se deben ejecutar los siguientes comandos en la terminal desde la carpeta del proyecto joko backend starter-kit:
+Propiedades mínimas:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/starter_kit
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.flyway.enabled=true
+spring.jpa.hibernate.ddl-auto=none
+joko.secret.mode=BD
+joko.security.storage.type=postgres
+joko.security.web.enabled=true
+```
+
+## 3. Arrancar
 
 ```shell
-  $ export ENV_VARS="/opt/starter-kit/development.vars"
-  $ ./scripts/updater fresh
-  $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
-  $ ./scripts/updater seed src/main/resources/db/sql/seed-config.sql
-  $ export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
-  $ mvn -Dext.prop.dir=/opt/starter-kit/dev spring-boot:run
+export SPRING_CONFIG_LOCATION=/opt/starter-kit/dev/application.properties
+mvn spring-boot:run
 ```
+
+Flyway crea:
+
+* schema `joko_security` (perfiles, keychain, tokens, sesiones)
+* schemas `basic` y `profile` (países, usuarios, notificaciones)
+* datos demo (`admin` / `123456`)
+
+## 4. Recrear desde cero
+
+Borrá y volvé a crear la base, o eliminá las tablas de Flyway
+(`flyway_schema_history`) y los schemas `joko_security`, `basic` y `profile`.
+El próximo arranque vuelve a migrar.
+
+`./scripts/updater fresh` sigue disponible para dropear/crear la base en
+flujos PostgreSQL que ya usaban `ENV_VARS`; las migraciones las aplica la
+aplicación, no el plugin de Liquibase.

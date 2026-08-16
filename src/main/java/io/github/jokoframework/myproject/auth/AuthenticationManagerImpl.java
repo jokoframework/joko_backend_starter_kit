@@ -44,7 +44,11 @@ public class AuthenticationManagerImpl implements JokoAuthenticationManager {
             UserAuthDTO user = userManager.checkUser(authentication.getUsername(), authentication.getPassword());
             authentication.setAuthenticated(true);
             authentication.addRole(user.getProfile());
-            auditPrincipalSession(authentication, user);
+            try {
+                auditPrincipalSession(authentication, user);
+            } catch (Exception auditError) {
+                LOGGER.warn("Could not persist session audit: {}", auditError.getMessage());
+            }
             return authentication;
         } catch (UserException e) {
             LOGGER.error(e.getMessage(), e);

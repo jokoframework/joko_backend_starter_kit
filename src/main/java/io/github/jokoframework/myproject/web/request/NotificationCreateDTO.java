@@ -1,6 +1,6 @@
 package io.github.jokoframework.myproject.web.request;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * DTO para la creación de notificaciones

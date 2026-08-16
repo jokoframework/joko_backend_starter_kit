@@ -12,8 +12,8 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -24,7 +24,7 @@ import java.util.Date;
 public abstract class BaseRestController {
     
     public static final String JOKO_STARTER_KIT_VERSION_HEADER = "X-JOKO-STARTER-KIT-VERSION";
-    public static final String JOKO_STARTER_KIT_VERSION = "1.0";
+    public static final String JOKO_STARTER_KIT_VERSION = "2.0";
     
     @RequestMapping(value = ApiPaths.ROOT_DIAGNOSTIC + ApiPaths.SUFFIX_HEART_BEAT, method = RequestMethod.GET)
     public ResponseEntity<HeartBeatResponseDTO> getHearbeat() {
