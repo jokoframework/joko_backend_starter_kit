@@ -21,7 +21,7 @@
         <dist.project.name>Starter Kit</dist.project.name>
         <dist.project.description>Starter Kit</dist.project.description>
         <start-class>io.github.jokoframework.myproject.Application</start-class>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <tomcat.version>10.1.57</tomcat.version>
         <postgresql.version>42.7.13</postgresql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -3,7 +3,7 @@
 # turn-key.sh — Deja el joko_backend_starter_kit listo para ejecutar sin
 # Personal Access Token (PAT) de GitHub.
 #
-#   1. SDKMAN + Java 17 + Maven (si no están instalados)
+#   1. SDKMAN + Java 21 + Maven (si no están instalados)
 #   2. Si faltan en ~/.m2 las versiones del pom, instala joko-utils
 #      (tag público) y/o el parent joko-security 2.x (hermano ../security)
 #   3. Deja configurado .env para docker compose
@@ -71,11 +71,11 @@ sdk_call() {
 }
 
 JAVA_MAJOR="$(java -version 2>&1 | awk -F[\".] '/version/ {print $2; exit}')"
-if [ -z "${JAVA_MAJOR}" ] || [ "${JAVA_MAJOR}" -lt 17 ]; then
+if [ -z "${JAVA_MAJOR}" ] || [ "${JAVA_MAJOR}" -lt 21 ]; then
     JAVA_CANDIDATE="$(sdk_call list java 2>/dev/null \
         | perl -pe 's/\e\[[0-9;]*m//g' \
-        | grep -oE '17\.[0-9]+\.[0-9]+-tem' | head -n1 || true)"
-    JAVA_CANDIDATE="${JAVA_CANDIDATE:-17.0.15-tem}"
+        | grep -oE '21\.[0-9]+\.[0-9]+-tem' | head -n1 || true)"
+    JAVA_CANDIDATE="${JAVA_CANDIDATE:-21.0.8-tem}"
     if [ ! -d "${HOME}/.sdkman/candidates/java/${JAVA_CANDIDATE}" ]; then
         say "Instalando Java ${JAVA_CANDIDATE} (SDKMAN)..."
         sdk_call install java "$JAVA_CANDIDATE"
@@ -84,7 +84,7 @@ if [ -z "${JAVA_MAJOR}" ] || [ "${JAVA_MAJOR}" -lt 17 ]; then
     sdk_call default java "$JAVA_CANDIDATE" >/dev/null 2>&1 || true
     export PATH="${JAVA_HOME}/bin:${PATH}"
 else
-    say "Java ${JAVA_MAJOR} ya satisface el mínimo (17)."
+    say "Java ${JAVA_MAJOR} ya satisface el mínimo (21)."
 fi
 
 if ! command -v mvn >/dev/null 2>&1; then

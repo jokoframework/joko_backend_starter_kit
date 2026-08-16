@@ -3,7 +3,7 @@
 Plantilla backend para proyectos nuevos del ecosistema Joko:
 
 * Autenticación JWT con **joko-security 2.x** (arquitectura modular)
-* Spring Boot 3.5.16 / Java 17
+* Spring Boot 3.5.16 / Java 21
 * Documentación OpenAPI (Springdoc) en `/swagger-ui.html`
 * Servicios de ejemplo: usuarios, países, notificaciones
 * JPA + Flyway
@@ -11,7 +11,7 @@ Plantilla backend para proyectos nuevos del ecosistema Joko:
 
 ## Requisitos
 
-* Java 17+
+* Java 21+
 * Maven 3.9+ (o el wrapper `./mvnw`)
 * `joko-security` 2.x y `joko-utils` instalados en el repositorio local de Maven
 
@@ -23,7 +23,7 @@ Las dependencias Joko no están en Maven Central. Se instalan en local con `./sc
 ./scripts/turn-key.sh
 ```
 
-El script instala Java 17 y Maven si faltan, compila `joko-utils` y el parent modular de joko-security 2.x, y verifica que este proyecto compile. Después:
+El script instala Java 21 y Maven si faltan, compila `joko-utils` y el parent modular de joko-security 2.x, y verifica que este proyecto compile. Después:
 
 ```shell
 # Opción 1: Docker
@@ -70,7 +70,7 @@ Informe: `target/dependency-check-report.html`. La consola lista CVE sin score; 
 | 1.x | 2.x |
 |---|---|
 | `joko-security` 1.2.x (JAR único) | `joko-security-starter` 2.x (core + storage + web + autoconfigure) |
-| Spring Boot 2.7 / Java 11 | Spring Boot 3.5.16 / Java 17 |
+| Spring Boot 2.7 / Java 11 | Spring Boot 3.5.16 / Java 21 |
 | Springfox | Springdoc (`/swagger-ui.html`) |
 | Liquibase | Flyway (`src/main/resources/db/migration`) |
 | `javax.*` | `jakarta.*` |

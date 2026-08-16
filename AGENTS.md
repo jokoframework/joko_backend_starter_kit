@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Spring Boot 3.5.16 / Java 17 / Maven backend starter kit (Joko framework). Docs and comments are mostly in Spanish; code is `io.github.jokoframework.myproject`. It is a **template** — new projects fork it and rename the package.
+Spring Boot 3.5.16 / Java 21 / Maven backend starter kit (Joko framework). Docs and comments are mostly in Spanish; code is `io.github.jokoframework.myproject`. It is a **template** — new projects fork it and rename the package.
 
 ## Build prerequisites
 
-- Maven wrapper is available (`./mvnw`). `scripts/turn-key.sh` bootstraps SDKMAN + Java 17 + Maven if the runtime is older than 17.
+- Maven wrapper is available (`./mvnw`). `scripts/turn-key.sh` bootstraps SDKMAN + Java 21 + Maven if the runtime is older than 21.
 - `joko-security` 2.x and `joko-utils` are **not on Maven Central**. `scripts/turn-key.sh` reads versions from this `pom.xml` and **skips clone/install if those artifacts are already in `~/.m2`**. Otherwise it builds `joko-utils` from the public tag `v{joko-utils.version}` and `joko-security` from the sibling `../security` (`JOKO_SECURITY_SRC` override). No GitHub PAT. Tests + OWASP are skipped during that install.
 - `mvn verify` / `package` runs OWASP Dependency-Check 13 in **warning-only** mode (`failBuildOnCVSS=11`). It needs `NVD_API_KEY` for a useful NVD update. Skip with `-Ddependency-check.skip=true`. Strict gate: `-Ddependency-check.failBuildOnCVSS=8`. Report: `target/dependency-check-report.html`.
 

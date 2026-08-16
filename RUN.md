@@ -4,7 +4,7 @@
 
 * Sistema UNIX (Linux/macOS) con `bash`, `git`, `curl`.
 * No hace falta tener Java ni Maven instalados: el script de puesta a punto
-  los instala vía SDKMAN si faltan (Java 17+).
+  los instala vía SDKMAN si faltan (Java 21+).
 * **No se necesita ningún Personal Access Token (PAT) de GitHub.**
   `joko-utils` se clona del repositorio público. **joko-security 2.x** se
   instala desde el parent modular local (`JOKO_SECURITY_SRC`).
@@ -19,8 +19,8 @@ Desde la raíz del proyecto:
 
 El script es idempotente y hace lo siguiente:
 
-1. Instala SDKMAN si falta, y con él Java 17 y Maven 3.9.x si el Java del
-   sistema es menor a 17.
+1. Instala SDKMAN si falta, y con él Java 21 y Maven 3.9.x si el Java del
+   sistema es menor a 21.
 2. Lee `joko-utils.version` y `joko-security.version` del `pom.xml`.
    Si esos artefactos **ya están en `~/.m2`**, no clona ni compila.
 3. Si faltan: clona `joko-utils` (tag `v{versión}`) y/o instala el parent
