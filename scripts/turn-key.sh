@@ -10,6 +10,7 @@
 #   4. Verifica que el proyecto compile
 #
 # Uso:   ./scripts/turn-key.sh
+# Ante fallos de descarga (proxy/SSL en 443): ./scripts/check-env.sh
 # Layout esperado (directorios hermanos):
 #   <parent>/
 #     security/                    # joko-security-parent 2.x
