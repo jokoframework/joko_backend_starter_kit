@@ -7,12 +7,15 @@
 # handshake TLS falla, lista la URL y el certificado que presentó el peer.
 #
 # En laboratorios con proxy transparente en el puerto 443 el síntoma típico
-# es un certificado de la CA de la universidad (inspección SSL) que curl,
-# Git o el cacerts de Java no confían.
+# es un certificado de la CA de la universidad (inspección SSL / Squid) que
+# curl, Git o el cacerts de Java no confían. La hoja (p. ej. CN=*.docker.com)
+# no se importa: hace falta la CA de la cadena (p. ej. Lab Squid Intercept CA).
 #
 # Uso:
 #   ./scripts/check-env.sh
 #   ./scripts/check-env.sh -v
+#   ./scripts/check-env.sh --save-ca ./intercept-ca.pem
+#   ./scripts/check-env.sh --no-save-ca
 #   CONNECT_TIMEOUT=5 ./scripts/check-env.sh
 #
 # Variables de entorno (opcionales):
@@ -26,11 +29,16 @@
 
 set -uo pipefail
 
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONNECT_TIMEOUT="${CONNECT_TIMEOUT:-10}"
 VERBOSE=0
+SAVE_CA="auto"
 FAIL_COUNT=0
 TLS_FAIL_COUNT=0
 PUBLIC_CA_WARN=0
+INTERCEPT_CA_PEM=""
+INTERCEPT_CA_FP=""
+INTERCEPT_CA_HITS=0
 
 say()    { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 ok()     { printf '  \033[1;32m[OK]\033[0m   %s\n' "$*"; }
@@ -39,13 +47,22 @@ fail()   { printf '  \033[1;31m[FAIL]\033[0m %s\n' "$*"; }
 indent() { printf '         %s\n' "$*"; }
 
 usage() {
-    sed -n '2,28p' "$0" | sed 's/^# \?//'
+    sed -n '2,32p' "$0" | sed 's/^# \?//'
 }
 
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help) usage; exit 0 ;;
         -v|--verbose) VERBOSE=1; shift ;;
+        --no-save-ca) SAVE_CA="none"; shift ;;
+        --save-ca)
+            if [ $# -lt 2 ]; then
+                printf 'ERROR: --save-ca requiere un archivo.\n' >&2
+                exit 2
+            fi
+            SAVE_CA="$2"
+            shift 2
+            ;;
         *)
             printf 'ERROR: argumento desconocido: %s\n' "$1" >&2
             usage >&2
@@ -99,14 +116,6 @@ port_of() {
     esac
 }
 
-leaf_pem_from_sclient() {
-    awk '
-        /-----BEGIN CERTIFICATE-----/ { grab=1 }
-        grab { print }
-        /-----END CERTIFICATE-----/ && grab { exit }
-    '
-}
-
 peer_sclient() {
     local host="$1" port="$2"
     printf '\n' | with_timeout "$CONNECT_TIMEOUT" \
@@ -114,13 +123,85 @@ peer_sclient() {
             -showcerts 2>&1 || true
 }
 
+pem_line() {
+    local pem="$1"
+    shift
+    printf '%s\n' "$pem" | openssl x509 -noout "$@" 2>/dev/null || true
+}
+
+normalize_dn() {
+    printf '%s\n' "$1" | sed 's/^subject=//;s/^issuer=//;s/ = /=/g'
+}
+
+pem_fp() {
+    pem_line "$1" -fingerprint -sha256 | sed 's/^.*Fingerprint=//'
+}
+
+# Extrae certificados de un dump de s_client. Rellena CHAIN_PEMS (array) y CHAIN_N.
+parse_chain() {
+    local raw="$1"
+    local pem="" in=0 line
+    CHAIN_PEMS=()
+    CHAIN_N=0
+    while IFS= read -r line || [ -n "$line" ]; do
+        case "$line" in
+            -----BEGIN\ CERTIFICATE-----)
+                in=1
+                pem="$line"$'\n'
+                ;;
+            -----END\ CERTIFICATE-----)
+                pem+="$line"$'\n'
+                CHAIN_PEMS+=("$pem")
+                CHAIN_N=$((CHAIN_N + 1))
+                in=0
+                pem=""
+                ;;
+            *)
+                if [ "$in" -eq 1 ]; then
+                    pem+="$line"$'\n'
+                fi
+                ;;
+        esac
+    done <<< "$raw"
+}
+
+# Dada la cadena, elige la hoja y la CA interceptora (si hay).
+# Rellena LEAF_PEM y CA_PEM.
+pick_leaf_and_ca() {
+    local i leaf_iss leaf_sub c_sub c_iss
+    LEAF_PEM=""
+    CA_PEM=""
+    [ "$CHAIN_N" -ge 1 ] || return 0
+    LEAF_PEM="${CHAIN_PEMS[0]}"
+    leaf_iss="$(normalize_dn "$(pem_line "$LEAF_PEM" -issuer)")"
+    leaf_sub="$(normalize_dn "$(pem_line "$LEAF_PEM" -subject)")"
+
+    for i in "${!CHAIN_PEMS[@]}"; do
+        [ "$i" -eq 0 ] && continue
+        c_sub="$(normalize_dn "$(pem_line "${CHAIN_PEMS[$i]}" -subject)")"
+        c_iss="$(normalize_dn "$(pem_line "${CHAIN_PEMS[$i]}" -issuer)")"
+        if [ -n "$c_sub" ] && [ "$c_sub" = "$leaf_iss" ]; then
+            CA_PEM="${CHAIN_PEMS[$i]}"
+            break
+        fi
+        if [ -n "$c_sub" ] && [ "$c_sub" = "$c_iss" ]; then
+            CA_PEM="${CHAIN_PEMS[$i]}"
+            break
+        fi
+    done
+
+    if [ -z "$CA_PEM" ] && [ -n "$leaf_sub" ] && [ "$leaf_sub" = "$leaf_iss" ]; then
+        CA_PEM="$LEAF_PEM"
+    fi
+}
+
 summarize_pem() {
     local pem="$1"
     local subject issuer dates serial fp san
-    subject="$(printf '%s\n' "$pem" | openssl x509 -noout -subject 2>/dev/null || true)"
-    issuer="$(printf '%s\n' "$pem" | openssl x509 -noout -issuer 2>/dev/null || true)"
+    subject="$(pem_line "$pem" -subject)"
+    issuer="$(pem_line "$pem" -issuer)"
     dates="$(printf '%s\n' "$pem" | openssl x509 -noout -dates 2>/dev/null || true)"
-    serial="$(printf '%s\n' "$pem" | openssl x509 -noout -serial 2>/dev/null || true)"
+    serial="$(pem_line "$pem" -serial)"
     fp="$(printf '%s\n' "$pem" | openssl x509 -noout -fingerprint -sha256 2>/dev/null || true)"
     san="$(printf '%s\n' "$pem" | openssl x509 -noout -ext subjectAltName 2>/dev/null \
         | grep -v '^X509v3' | grep -v '^$' || true)"
@@ -147,23 +228,44 @@ summarize_pem() {
 }
 
 issuer_looks_public() {
-    # Evitar subcadenas ambiguas (p. ej. SSL.com dentro de badssl.com).
     echo "$1" | grep -qiE \
         'Let.s Encrypt|DigiCert|Amazon( RSA| Root| Trust)?|Google Trust Services|Sectigo|GlobalSign|Starfield|Go ?Daddy|Cloudflare|ISRG Root|IdenTrust|COMODO (CA|RSA)|Comodo CA|Entrust|Thawte|VeriSign|GeoTrust|Certum|GitHub|Microsoft (Azure|Corporation|RSA)|Apple (Inc|Certification)|USERTrust|AAA Certificate Services'
 }
 
+issuer_looks_intercept() {
+    echo "$1" | grep -qiE \
+        'Squid|Intercept|SSL.?Bump|pfSense|Forti(Gate|net)|Zscaler|BlueCoat|Blue Coat|Netskope|Cisco Umbrella|Sophos|Kerio|OPNsense'
+}
+
+remember_intercept_ca() {
+    local pem="$1"
+    local fp
+    [ -n "$pem" ] || return 0
+    fp="$(pem_fp "$pem")"
+    if [ -z "$INTERCEPT_CA_PEM" ]; then
+        INTERCEPT_CA_PEM="$pem"
+        INTERCEPT_CA_FP="$fp"
+        INTERCEPT_CA_HITS=1
+        return 0
+    fi
+    if [ -n "$fp" ] && [ "$fp" = "$INTERCEPT_CA_FP" ]; then
+        INTERCEPT_CA_HITS=$((INTERCEPT_CA_HITS + 1))
+    fi
+}
+
 print_presented_cert() {
     local url="$1"
-    local host port raw pem issuer
+    local host port raw issuer
     host="$(host_of "$url")"
     port="$(port_of "$url")"
     raw="$(peer_sclient "$host" "$port")"
-    pem="$(printf '%s\n' "$raw" | leaf_pem_from_sclient)"
+    parse_chain "$raw"
+    pick_leaf_and_ca
 
     indent "URL:  $url"
     indent "Peer: ${host}:${port}"
 
-    if [ -z "$pem" ]; then
+    if [ -z "$LEAF_PEM" ]; then
         indent "El peer no presentó un certificado X.509 (o la conexión se cortó antes del handshake)."
         indent "Salida de openssl s_client (recorte):"
         printf '%s\n' "$raw" | head -n 25 | while IFS= read -r line; do
@@ -173,27 +275,37 @@ print_presented_cert() {
     fi
 
     indent "Certificado presentado (hoja):"
-    summarize_pem "$pem"
+    summarize_pem "$LEAF_PEM"
 
-    issuer="$(printf '%s\n' "$pem" | openssl x509 -noout -issuer 2>/dev/null || true)"
+    issuer="$(pem_line "$LEAF_PEM" -issuer)"
     indent ""
     if [ -n "$issuer" ] && ! issuer_looks_public "$issuer"; then
         indent "El Issuer no parece una CA pública. En campus suele ser un proxy"
         indent "transparente con inspección SSL en el puerto 443."
-        indent "Pedí el certificado de la CA de la red e importalo en:"
-        indent "  - el almacén del sistema (para curl/git)"
-        indent "  - el cacerts de Java (para Maven):"
-        indent "      keytool -importcert -alias campus-ca -file ca.pem \\"
-        indent "        -keystore \"\$JAVA_HOME/lib/security/cacerts\""
+        if issuer_looks_intercept "$issuer"; then
+            indent "El nombre del emisor coincide con un proxy de inspección (p. ej. Squid SSL bump)."
+        fi
+        if [ -n "$CA_PEM" ]; then
+            indent "CA de la cadena (esta es la que hay que importar, no la hoja):"
+            summarize_pem "$CA_PEM"
+            remember_intercept_ca "$CA_PEM"
+            indent "PEM y pasos de importación: ver el resumen al final."
+        else
+            indent "La CA no vino en la cadena TLS; pedí el .pem a la red del campus."
+        fi
     else
         indent "El emisor parece una CA pública; el fallo puede ser fecha, nombre o cadena incompleta."
     fi
 
     if [ "$VERBOSE" -eq 1 ]; then
+        local i
         indent ""
-        indent "PEM de la hoja:"
-        printf '%s\n' "$pem" | while IFS= read -r line; do
-            indent "  $line"
+        indent "Cadena completa ($CHAIN_N certificado(s)):"
+        for i in "${!CHAIN_PEMS[@]}"; do
+            indent "----- certificado $((i + 1)) -----"
+            printf '%s\n' "${CHAIN_PEMS[$i]}" | while IFS= read -r line; do
+                indent "  $line"
+            done
         done
     fi
 }
@@ -239,7 +351,6 @@ probe_url() {
     printf 'RC=%s HTTP=%s ERR=%s\n' "$rc" "${code:-}" "$err"
 }
 
-# ¿El handshake completa si se ignora la verificación del certificado?
 insecure_handshake_ok() {
     curl -sk -I -L --max-redirs 5 \
         --connect-timeout "$CONNECT_TIMEOUT" \
@@ -269,16 +380,15 @@ check_one() {
                 ;;
         esac
         if [ "$VERBOSE" -eq 1 ]; then
-            local host port raw pem issuer subject
+            local host port raw
             host="$(host_of "$url")"
             port="$(port_of "$url")"
             raw="$(peer_sclient "$host" "$port")"
-            pem="$(printf '%s\n' "$raw" | leaf_pem_from_sclient)"
-            if [ -n "$pem" ]; then
-                subject="$(printf '%s\n' "$pem" | openssl x509 -noout -subject 2>/dev/null || true)"
-                issuer="$(printf '%s\n' "$pem" | openssl x509 -noout -issuer 2>/dev/null || true)"
-                [ -n "$subject" ] && indent "$subject"
-                [ -n "$issuer" ]  && indent "$issuer"
+            parse_chain "$raw"
+            pick_leaf_and_ca
+            if [ -n "$LEAF_PEM" ]; then
+                indent "$(pem_line "$LEAF_PEM" -subject)"
+                indent "$(pem_line "$LEAF_PEM" -issuer)"
             fi
         fi
         return 0
@@ -310,6 +420,55 @@ check_one() {
         fi
     fi
     return 1
+}
+
+save_dest() {
+    case "$SAVE_CA" in
+        none) printf '\n' ;;
+        auto) printf '%s\n' "${REPO_ROOT}/intercept-ca.pem" ;;
+        *)    printf '%s\n' "$SAVE_CA" ;;
+    esac
+}
+
+print_intercept_ca_report() {
+    local dest
+    [ -n "$INTERCEPT_CA_PEM" ] || return 0
+
+    say "CA interceptora (la que hay que importar)"
+    indent "Apareció en $INTERCEPT_CA_HITS sitio(s). No importes la hoja (p. ej. CN=*.docker.com)."
+    summarize_pem "$INTERCEPT_CA_PEM"
+
+    dest="$(save_dest)"
+    if [ -n "$dest" ]; then
+        printf '%s' "$INTERCEPT_CA_PEM" > "$dest"
+        indent ""
+        indent "PEM guardado en: $dest"
+    else
+        indent ""
+        indent "PEM de la CA (no se guardó archivo: --no-save-ca):"
+        printf '%s\n' "$INTERCEPT_CA_PEM" | while IFS= read -r line; do
+            [ -n "$line" ] && indent "  $line"
+        done
+    fi
+
+    indent ""
+    indent "Sistema (curl, git, SDKMAN) — Debian/Ubuntu:"
+    if [ -n "$dest" ]; then
+        indent "  sudo cp \"$dest\" /usr/local/share/ca-certificates/campus-intercept.crt"
+        indent "  sudo update-ca-certificates"
+        indent "Java / Maven (cacerts propio, no el del sistema):"
+        indent "  keytool -importcert -trustcacerts -alias campus-ca -file \"$dest\" \\"
+        indent "    -keystore \"\$JAVA_HOME/lib/security/cacerts\""
+    else
+        indent "  Guardá el PEM de arriba en un .crt y luego:"
+        indent "  sudo cp campus-intercept.crt /usr/local/share/ca-certificates/"
+        indent "  sudo update-ca-certificates"
+        indent "Java / Maven: keytool -importcert -trustcacerts -alias campus-ca -file <crt> \\"
+        indent "    -keystore \"\$JAVA_HOME/lib/security/cacerts\""
+    fi
+    indent "Docker Engine no usa el cacerts de Java: tras update-ca-certificates,"
+    indent "  sudo systemctl restart docker"
+    indent "Después volvé a correr: ./scripts/check-env.sh"
 }
 
 print_tools() {
@@ -395,18 +554,21 @@ if [ "$FAIL_COUNT" -eq 0 ]; then
         host="$(host_of "$url")"
         port="$(port_of "$url")"
         raw="$(peer_sclient "$host" "$port")"
-        pem="$(printf '%s\n' "$raw" | leaf_pem_from_sclient)"
-        if [ -z "$pem" ]; then
+        parse_chain "$raw"
+        pick_leaf_and_ca
+        if [ -z "$LEAF_PEM" ]; then
             warn "$host: no se pudo leer el certificado (revisá con -v)"
             continue
         fi
-        issuer="$(printf '%s\n' "$pem" | openssl x509 -noout -issuer 2>/dev/null || true)"
-        subject="$(printf '%s\n' "$pem" | openssl x509 -noout -subject 2>/dev/null || true)"
         indent "$host"
-        [ -n "$subject" ] && indent "  $subject"
-        [ -n "$issuer" ]  && indent "  $issuer"
+        indent "  $(pem_line "$LEAF_PEM" -subject)"
+        indent "  $(pem_line "$LEAF_PEM" -issuer)"
+        issuer="$(pem_line "$LEAF_PEM" -issuer)"
         if [ -n "$issuer" ] && ! issuer_looks_public "$issuer"; then
             PUBLIC_CA_WARN=1
+            if [ -n "$CA_PEM" ]; then
+                remember_intercept_ca "$CA_PEM"
+            fi
         fi
     done
     if [ "$PUBLIC_CA_WARN" -eq 1 ]; then
@@ -416,6 +578,8 @@ if [ "$FAIL_COUNT" -eq 0 ]; then
     fi
 fi
 
+print_intercept_ca_report
+
 say "Resumen"
 if [ "$FAIL_COUNT" -eq 0 ] && [ "$PUBLIC_CA_WARN" -eq 0 ]; then
     ok "TLS correcto hacia los sitios de descarga. Podés seguir con ./scripts/turn-key.sh"
@@ -424,13 +588,16 @@ fi
 
 if [ "$FAIL_COUNT" -eq 0 ] && [ "$PUBLIC_CA_WARN" -eq 1 ]; then
     warn "La conexión HTTPS funciona, pero el certificado lo emite una CA de inspección SSL."
-    indent "Anotá el Issuer de arriba y tené a mano el .pem de la CA de la universidad"
-    indent "por si Maven/Java no la confían."
+    indent "Si Maven falla con PKIX, importá la CA de arriba en el cacerts de Java."
     exit 0
 fi
 
 fail "$FAIL_COUNT sitio(s) con problemas ($TLS_FAIL_COUNT de ellos por TLS/certificado)."
 indent "Sin esos destinos, turn-key.sh no puede instalar SDKMAN, Java, Maven o las dependencias."
-indent "Si el Issuer es de la universidad: pedí el CA del proxy e importalo (sistema + cacerts Java)."
-indent "Re-ejecutá este script hasta que todos los sitios den [OK]."
+if [ -n "$INTERCEPT_CA_PEM" ]; then
+    indent "Importá la CA interceptora del bloque anterior (sistema + cacerts Java) y re-ejecutá este script."
+else
+    indent "Si el Issuer es de la universidad: pedí el CA del proxy e importalo (sistema + cacerts Java)."
+    indent "Re-ejecutá este script hasta que todos los sitios den [OK]."
+fi
 exit 1
