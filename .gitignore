@@ -28,3 +28,6 @@ run-tests.sh
 .env
 .envrc
 
+# CA extraída por scripts/check-env.sh en redes con inspección SSL
+/intercept-ca.pem
+
